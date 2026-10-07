@@ -9,7 +9,7 @@
 
 <nav>
   <ul>
-    {% for p in site.pages %}
+    {% for p in pages %}
       {% if p.title and p.title != "" %}
         {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
         {% if node == "index" %}
@@ -30,7 +30,7 @@
 
   {% unless current == "" %}
     <ul>
-      {% for p in site.pages %}
+      {% for p in pages %}
         {% if p.title and p.title != "" %}
           {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
           {% if node == "index" %}
