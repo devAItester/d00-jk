@@ -5,159 +5,116 @@ title: styleguide
 
 # Styleguide
 
-Это функциональная спецификация визуального и HTML-стиля сайта.
+Это отдельная спецификация визуального языка и HTML-структуры, восстановленная по живому референсу XXIIVV.
 
-Референсный стиль минимален: семантический HTML задаёт структуру, CSS управляет типографикой, интервалами, монохромным контрастом, навигационными колонками и небольшим количеством специальных композиционных приёмов.
+Референс принципиально минимален: семантический HTML, системная serif-типографика, чёрно-белая палитра, фиксированный вертикальный ритм и небольшое количество CSS-правил. Oscean прямо описывает результат как HTML, доступный screen-readers и terminal browsers, без JavaScript и с очень маленькой таблицей стилей.
 
-## Document skeleton
+## 1. Page skeleton
 
     <header>...</header>
     <nav>...</nav>
-    <main>
-      <h1>Page title</h1>
-      <p>...</p>
-    </main>
+    <main>...</main>
     <footer>...</footer>
 
-Элементы выбираются по смыслу, а не ради их стандартного визуального вида.
+## 2. Global typography
 
-## Headings
+Основной шрифт — serif, размер — 16px. Основной цвет — #000, фон — #fff. Глобальный reset обнуляет margin/padding и убирает стандартное text-decoration.
 
-Один логический заголовок страницы — `h1`, затем последовательная иерархия:
+## 3. Vertical rhythm
 
-    # Page
-    ## Section
-    ### Subsection
-    #### Detail
+Базовая единица вертикального ритма — 30px. Абзацы используют line-height 160%, пункты списков — 25px. Не следует заменять этот общий ритм большим количеством локальных интервалов.
 
-Уровень заголовка нельзя выбирать только потому, что его размер визуально удобнее.
+## 4. Header
 
-## Paragraph
+Референсный header:
 
-    <p>
-      A paragraph with inline markup.
-    </p>
+    header { float:left; margin:50px 30px; margin-right:60px }
 
-CSS референса использует `160%` line-height для абзацев и общий вертикальный ритм около `30px`.
+Это не sticky-header и не отдельная панель. Заголовок сайта является частью верхней композиции.
 
-## Article
+## 5. Navigation
 
-    <article>
-      <h2>Related note</h2>
-      <p>...</p>
-    </article>
+Навигация — главное композиционное правило сайта.
 
-Визуально article получает пунктирную левую границу и внутренний отступ.
+    nav { padding:45px 30px; margin:0 }
+    nav ul { padding:0; margin:0 45px 0 0; display:inline-block; vertical-align:top }
+    nav ul li { list-style-type:none; white-space:pre }
+    nav ul li a { padding:0 4px }
 
-## Links
+Колонки образуются соседними ul. Списки не вкладываются друг в друга для имитации колонок.
 
-    <a href="/audio/">audio</a>
-    <a href="https://example.org/">example</a>
+### Navigation groups
 
-Текст ссылки должен описывать назначение перехода. Пустые ссылки и бессодержательные подписи не используются.
+Меню показывает локальный участок дерева, а не полную карту сайта.
 
-## Image
+Для root: children(root).
 
-Информативное изображение:
+Для глубины 1: children(root), затем children(current).
 
-    <img src="/media/example.jpg"
-         alt="Краткое описание информации на изображении">
+Для глубины 2 и более: children(grandparent), children(parent), children(current).
 
-Декоративное:
+Пустые группы не выводятся. Максимум — три соседних вертикальных группы. Текущая страница подчёркивается классом self.
 
-    <img src="/media/ornament.svg" alt="">
+Навигация не является dropdown, sidebar-tree или accordion. Это несколько обычных вертикальных списков, расположенных горизонтально.
 
-Функциональное изображение-ссылка:
+## 6. Main content
 
-    <a href="/gallery/">
-      <img src="/media/gallery.png" alt="Gallery">
-    </a>
+Основная текстовая мера — 624px:
 
-## Figure
+    main { margin-left:30px; max-width:624px; clear:both; position:relative }
 
-    <figure>
-      <img src="/media/example.jpg"
-           width="1200"
-           height="800"
-           alt="...">
-      <figcaption>Caption or credit.</figcaption>
-    </figure>
+Обычные ссылки подчёркиваются. Внешние ссылки могут получать dotted underline.
 
-`figure` используется, когда изображение и подпись образуют единый смысловой объект.
+## 7. Headings
 
-## 3/4-width and full-width images
+Используется обычная HTML-иерархия h1–h5. Уровень выбирается семантически, а не по удобству визуального размера. Максимальная мера заголовков — 400px.
 
-Основная текстовая мера референса — около `624px`. Обычные изображения ограничены этой композицией.
+## 8. Paragraphs and quotes
 
-Первый `figure` получает специальную широкую обработку:
+Абзацы используют line-height 160%. q — serif, 18px, italic, max-width 400px. cite выводится отдельным блоком с автоматическим префиксом «— ».
 
-    width: 800px;
-    max-width: 100vw;
-    margin-left: -30px;
+## 9. Lists
 
-Поэтому lead image может выходить за пределы текстовой меры, но обычные изображения остаются внутри неё.
+Списки имеют margin 0 0 30px 30px. Пункты используют line-height 25px и горизонтальный padding 5px.
 
-## Lists
+## 10. Images and figures
 
-    - first
-    - second
-      - nested
+Обычные изображения ограничены шириной main. Первый figure страницы — специальный lead-элемент: width 800px, max-width 100vw, margin-left -30px. figcaption получает padding 15px 0.
 
-    1. first
-    2. second
+## 11. Article
 
-Референс использует line-height списка около `25px` и структурный левый отступ.
+Article имеет пунктирную левую границу и padding-left 25px. Вложенный h2 может быть визуально скрыт без удаления семантического элемента.
 
-## Tables
+## 12. Tables
 
-Таблицы предназначены для табличных отношений, а не для компоновки страницы.
+Таблицы предназначены только для табличных отношений. td/th используют vertical-align top, padding 2.5px 5px и text-align left.
 
-    | property | value |
-    | --- | --- |
-    | size | 16px |
-    | rhythm | 30px |
+## 13. Code
 
-## Code
+Inline code сохраняет пробелы. pre получает overflow:auto, фон #efefef, padding 10px и font-size 80%. Внутренний code/i имеет цвет #888. tab-size — 2.
 
-Строчный код:
+## 14. Keyboard input
 
-    command
+kbd — небольшой типографический элемент с border 2px solid #222, line-height 20px, font-size 12px и padding 0 5px.
 
-Блок кода:
+## 15. Footer
 
-        command --option
-          argument
+Footer отделяется пунктирной верхней границей и использует тот же 30px вертикальный ритм.
 
-В light mode code block имеет светлый фон; в dark mode — почти чёрный.
+## 16. Interaction
 
-## Quote
+Hover предельно простой: чёрный фон и белый текст. Нет анимаций, теней, dropdown-эффектов или JavaScript для базовой навигации.
 
-    > A quotation.
+## 17. Dark mode
 
-    <cite>Source</cite>
+Dark mode определяется prefers-color-scheme: dark. Фон становится #000, текст #fff, hover инвертируется, pre получает #111.
 
-## Horizontal rule
+## 18. Low-tech constraints
 
-    ---
+Публичные страницы должны оставаться читаемыми без JavaScript, использовать обычные a href, сохранять текст в DOM и иметь подходящие text alternatives для изображений. Основная навигация не должна зависеть от внешнего запроса.
 
-`hr` используется как тематический разделитель, а не как универсальный spacer.
+## 19. Reference
 
-## Keyboard input
+Живой эталонный пример: https://wiki.xxiivv.com/site/styleguide.html
 
-    <kbd>Ctrl</kbd>+<kbd>S</kbd>
-
-## Functional checklist
-
-Каждая публичная страница должна иметь:
-
-- осмысленный `title`;
-- ясный основной заголовок;
-- читаемый текст в DOM;
-- обычные crawlable `a href` links;
-- подходящие text alternatives для изображений;
-- размеры изображений, когда они известны;
-- captions, когда они нужны по смыслу;
-- отсутствие случайных дублирующих URL;
-- отсутствие битых внутренних ссылок.
-
-Требования сопоставляются с HTML Living Standard, WCAG и рекомендациями Google Search.
+Страница показывает headings, paragraph, inline markup, lists, table, pre block, quote, image, figure и footer.
