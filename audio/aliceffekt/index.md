@@ -1,4 +1,5 @@
 ---
+permalink: /audio/aliceffekt.html
 layout: default
 title: aliceffekt
 arvelie: 00002
