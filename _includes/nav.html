@@ -1,14 +1,48 @@
 <nav>
+  {% assign current = page.path | split: '/' %}
+  {% assign section = current[0] %}
   <ul>
-    <li><a href="{{ '/' | relative_url }}">index</a></li>
-    {% assign parts = page.path | split: '/' %}
-    {% assign section = parts[0] %}
+    <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="self"{% endif %}>index</a></li>
     {% for p in site.pages %}
-      {% assign pparts = p.path | split: '/' %}
-      {% if pparts[0] == section and p.path != section | append: '/index.md' %}
-        {% assign link = p.path | replace: '.md', '.html' | prepend: '/' | replace: '/index.html', '/' %}
-        {% if p.url != page.url %}<li><a href="{{ link | relative_url }}">{{ p.title }}</a></li>{% endif %}
+      {% assign parts = p.path | split: '/' %}
+      {% if parts.size == 2 and parts[1] == 'index.md' %}
+        {% assign link = p.url %}
+        <li><a href="{{ link | relative_url }}" {% if parts[0] == section %}class="parent"{% endif %}>{{ p.title }}</a></li>
       {% endif %}
     {% endfor %}
   </ul>
+  {% if section != 'index.html' and section != '' %}
+  <ul>
+    {% for p in site.pages %}
+      {% assign parts = p.path | split: '/' %}
+      {% if parts.size == 2 and parts[0] == section %}
+        <li><a href="{{ p.url | relative_url }}" {% if p.url == page.url %}class="self"{% else %}class="parent"{% endif %}>{{ p.title }}</a></li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+  {% for depth in (2..5) %}
+    {% assign prefix = '' %}
+    {% for i in (0..depth) %}
+      {% if i < current.size %}
+        {% assign prefix = prefix | append: current[i] | append: '/' %}
+      {% endif %}
+    {% endfor %}
+    {% if prefix != '' %}
+    <ul>
+      {% for p in site.pages %}
+        {% assign pp = p.path | split: '/' %}
+        {% assign pprefix = '' %}
+        {% for i in (0..depth) %}
+          {% if i < pp.size %}
+            {% assign pprefix = pprefix | append: pp[i] | append: '/' %}
+          {% endif %}
+        {% endfor %}
+        {% if pprefix == prefix and p.url != page.url %}
+          <li><a href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+    {% endif %}
+  {% endfor %}
+  {% endif %}
 </nav>
