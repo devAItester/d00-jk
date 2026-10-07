@@ -1,4 +1,5 @@
 ---
+permalink: /visual/procedural.html
 layout: default
 title: procedural index
 arvelie: 00014
