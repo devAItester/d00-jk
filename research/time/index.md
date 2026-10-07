@@ -1,4 +1,5 @@
 ---
+permalink: /research/time.html
 layout: default
 title: time index
 arvelie: 00028
