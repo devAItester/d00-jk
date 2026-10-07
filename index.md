@@ -1,7 +1,6 @@
 ---
 layout: default
 title: index
-permalink: /
 ---
 <h1>flatfiletxtdb</h1>
 <p>A directory is a path. A Markdown file is a node.</p>
