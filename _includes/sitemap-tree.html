@@ -1,37 +1,12 @@
-{% assign found = false %}
-{% for p in include.pages %}
-  {% if p.title and p.title != "" %}
-    {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
-    {% if node == "index" %}
-      {% assign node = "" %}
-    {% endif %}
-    {% assign parts = node | split: "/" %}
-    {% assign parent_parts = parts | pop %}
-    {% assign parent = parent_parts | join: "/" %}
-    {% if node != "" and parent == include.parent %}
-      {% assign found = true %}
-    {% endif %}
-  {% endif %}
-{% endfor %}
-
-{% if found %}
-<ul>
-{% for p in include.pages %}
-  {% if p.title and p.title != "" %}
-    {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
-    {% if node == "index" %}
-      {% assign node = "" %}
-    {% endif %}
-    {% assign parts = node | split: "/" %}
-    {% assign parent_parts = parts | pop %}
-    {% assign parent = parent_parts | join: "/" %}
-    {% if node != "" and parent == include.parent %}
-      <li>
-        <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
-        {% include sitemap-tree.html parent=node pages=include.pages %}
-      </li>
-    {% endif %}
+{% assign pages = include.pages | sort: "path" %}
+<ul class="sitemap">
+{% for p in pages %}
+  {% if p.title and p.title != "" and p.path != "index.md" and p.path != "index.html" %}
+    {% assign parts = p.path | split: "/" %}
+    {% assign depth = parts.size | minus: 1 %}
+    <li style="margin-left: {{ depth | times: 30 }}px">
+      <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
+    </li>
   {% endif %}
 {% endfor %}
 </ul>
-{% endif %}
