@@ -5,11 +5,13 @@ permalink: /
 ---
 <h1>flatfiletxtdb</h1>
 <p>A directory is a path. A Markdown file is a node.</p>
-
 <ul>
 {% for p in site.pages %}
-  {% if p.url != "/" and p.url contains "/" and p.url != p.dir %}
-    <li><a href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
-  {% endif %}
+  {% unless p.path contains '/index.md' %}
+    {% if p.path contains '/' %}
+      {% assign link = p.path | replace: '.md', '.html' | prepend: '/' %}
+      <li><a href="{{ link | relative_url }}">{{ p.title }}</a></li>
+    {% endif %}
+  {% endunless %}
 {% endfor %}
 </ul>
