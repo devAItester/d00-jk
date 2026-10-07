@@ -1,4 +1,5 @@
 ---
+permalink: /audio/generative.html
 layout: default
 title: generative
 arvelie: 00004
