@@ -1,0 +1,22 @@
+* { margin:0;padding:0;text-decoration:none;box-sizing:border-box;color:#000 }
+html { background-image:url(../media/icon/halftone.gif);background-repeat:repeat;background-attachment:fixed }
+body { background:#fff;font-family:serif;font-size:16px;min-height:calc(100vh - 15px);padding-bottom:30px }
+body > *, body main > *, main figure > div > *, main p, main q, main cite, main pre { margin-bottom:30px }
+body .right { float:right;margin-left:30px }
+body a.self, body a.parent { font-style:italic }
+main a:hover, main a:hover > *, nav a:hover, nav main a:hover > * { background-color:#000;color:#fff;text-decoration:none }
+table td, table th { vertical-align:top;padding:2.5px 5px;text-align:left }
+table td > pre, table th > pre { background:none;padding:0;margin:0 }
+table tr img { margin-bottom:0;display:block }
+hr { clear:both;border:0;margin:0 }
+pre { tab-size:2 }
+header { float:left;margin:50px 30px;margin-right:60px }
+header img { display:block }
+nav { padding:45px 30px;margin:0 }
+nav ul { padding:0;margin:0 45px 0 0;display:inline-block;vertical-align:top }
+nav ul li { list-style-type:none;white-space:pre }
+nav ul li a { padding:0 4px }
+nav ul li a.parent, nav ul li a.self { text-decoration:underline }
+main { margin-left:30px;max-width:624px;clear:both;position:relative }
+main a { text-decoration:underline }
+main a[target=" _blank"] { text-decoration-style:dotted }
