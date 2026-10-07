@@ -1,4 +1,5 @@
 ---
+permalink: /research/systems.html
 layout: default
 title: systems index
 arvelie: 00026
