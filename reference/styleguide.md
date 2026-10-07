@@ -5,9 +5,9 @@ title: styleguide
 
 # Styleguide
 
-This is the functional style guide for the replica.
+Это функциональная спецификация визуального и HTML-стиля сайта.
 
-The reference style is sparse: semantic HTML carries structure, CSS controls typography, spacing, monochrome contrast, navigation columns, and a small number of special presentation cases.
+Референсный стиль минимален: семантический HTML задаёт структуру, CSS управляет типографикой, интервалами, монохромным контрастом, навигационными колонками и небольшим количеством специальных композиционных приёмов.
 
 ## Document skeleton
 
@@ -19,18 +19,18 @@ The reference style is sparse: semantic HTML carries structure, CSS controls typ
     </main>
     <footer>...</footer>
 
-Use elements for meaning, not for their default visual appearance.
+Элементы выбираются по смыслу, а не ради их стандартного визуального вида.
 
 ## Headings
 
-Use one logical page title as h1, then descend hierarchically:
+Один логический заголовок страницы — `h1`, затем последовательная иерархия:
 
     # Page
     ## Section
     ### Subsection
     #### Detail
 
-Do not choose heading levels merely because a smaller visual size looks better.
+Уровень заголовка нельзя выбирать только потому, что его размер визуально удобнее.
 
 ## Paragraph
 
@@ -38,7 +38,7 @@ Do not choose heading levels merely because a smaller visual size looks better.
       A paragraph with inline markup.
     </p>
 
-The reference CSS uses 160% line-height for paragraphs and a 30px vertical rhythm.
+CSS референса использует `160%` line-height для абзацев и общий вертикальный ритм около `30px`.
 
 ## Article
 
@@ -47,27 +47,27 @@ The reference CSS uses 160% line-height for paragraphs and a 30px vertical rhyth
       <p>...</p>
     </article>
 
-The visual style uses a dotted left rule and internal padding.
+Визуально article получает пунктирную левую границу и внутренний отступ.
 
 ## Links
 
     <a href="/audio/">audio</a>
     <a href="https://example.org/">example</a>
 
-Anchor text should describe the destination. Avoid empty links and generic labels.
+Текст ссылки должен описывать назначение перехода. Пустые ссылки и бессодержательные подписи не используются.
 
 ## Image
 
-Informative:
+Информативное изображение:
 
     <img src="/media/example.jpg"
-         alt="A concise description of the information shown">
+         alt="Краткое описание информации на изображении">
 
-Decorative:
+Декоративное:
 
     <img src="/media/ornament.svg" alt="">
 
-Functional image link:
+Функциональное изображение-ссылка:
 
     <a href="/gallery/">
       <img src="/media/gallery.png" alt="Gallery">
@@ -83,21 +83,19 @@ Functional image link:
       <figcaption>Caption or credit.</figcaption>
     </figure>
 
-Use figure when the image and caption form one semantic unit.
+`figure` используется, когда изображение и подпись образуют единый смысловой объект.
 
 ## 3/4-width and full-width images
 
-The reference CSS has a main text measure of about 624px. Ordinary images are constrained by it.
+Основная текстовая мера референса — около `624px`. Обычные изображения ограничены этой композицией.
 
-The first figure receives a special wide treatment:
+Первый `figure` получает специальную широкую обработку:
 
     width: 800px;
     max-width: 100vw;
     margin-left: -30px;
 
-Therefore a lead image can extend beyond the prose measure while ordinary images remain inside it.
-
-This is a compositional distinction, not a requirement to make every image wide.
+Поэтому lead image может выходить за пределы текстовой меры, но обычные изображения остаются внутри неё.
 
 ## Lists
 
@@ -108,11 +106,11 @@ This is a compositional distinction, not a requirement to make every image wide.
     1. first
     2. second
 
-The reference uses a 25px list line-height and a structural left offset.
+Референс использует line-height списка около `25px` и структурный левый отступ.
 
 ## Tables
 
-Use tables for tabular relationships, never for page layout.
+Таблицы предназначены для табличных отношений, а не для компоновки страницы.
 
     | property | value |
     | --- | --- |
@@ -121,16 +119,16 @@ Use tables for tabular relationships, never for page layout.
 
 ## Code
 
-Inline:
+Строчный код:
 
     command
 
-Block:
+Блок кода:
 
         command --option
           argument
 
-The reference uses a light code block in light mode and a near-black block in dark mode.
+В light mode code block имеет светлый фон; в dark mode — почти чёрный.
 
 ## Quote
 
@@ -142,7 +140,7 @@ The reference uses a light code block in light mode and a near-black block in da
 
     ---
 
-Use hr as a thematic break, not as a generic spacer.
+`hr` используется как тематический разделитель, а не как универсальный spacer.
 
 ## Keyboard input
 
@@ -150,16 +148,16 @@ Use hr as a thematic break, not as a generic spacer.
 
 ## Functional checklist
 
-Every public page should have:
+Каждая публичная страница должна иметь:
 
-- a meaningful title;
-- a clear primary heading;
-- readable text in the DOM;
-- crawlable a href links;
-- appropriate image alternatives;
-- dimensions on images when known;
-- captions when contextual information is required;
-- no accidental duplicate URLs;
-- no broken internal links.
+- осмысленный `title`;
+- ясный основной заголовок;
+- читаемый текст в DOM;
+- обычные crawlable `a href` links;
+- подходящие text alternatives для изображений;
+- размеры изображений, когда они известны;
+- captions, когда они нужны по смыслу;
+- отсутствие случайных дублирующих URL;
+- отсутствие битых внутренних ссылок.
 
-The requirements are grounded in the HTML Living Standard, WCAG techniques, and Google Search guidance.
+Требования сопоставляются с HTML Living Standard, WCAG и рекомендациями Google Search.
