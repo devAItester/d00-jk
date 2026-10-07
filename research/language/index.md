@@ -1,4 +1,5 @@
 ---
+permalink: /research/language.html
 layout: default
 title: language index
 arvelie: 00030
