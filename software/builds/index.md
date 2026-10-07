@@ -1,4 +1,5 @@
 ---
+permalink: /software/builds.html
 layout: default
 title: builds index
 arvelie: 00024
