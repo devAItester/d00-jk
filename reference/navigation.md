@@ -5,133 +5,189 @@ title: navigation
 
 # Navigation
 
-The defining feature of this navigation model is a multi-column representation of a hierarchy.
+Навигация — это представление дерева контента, а не отдельная структура данных.
 
-The hierarchy can be arbitrarily deep. The viewport, not the data model, limits how many columns are displayed comfortably.
+В референсной модели нет глобального вручную поддерживаемого меню и нет ограничения глубины дерева. Страница определяется своим положением в иерархии, а меню строится из ближайшего локального окружения этой страницы.
 
-## Reference model
+## Модель
 
-The reference sitemap demonstrates levels substantially deeper than the three levels currently represented by this test implementation.
+Для текущей страницы строятся две независимые группы ссылок.
 
-    home
-    ├── audio
-    │   ├── aliceffekt
-    │   │   ├── laeisthic
-    │   │   │   ├── children of bramble
-    │   │   │   └── known magye
-    │   │   └── duomic
-    │   │       └── ver iytsl
-    │   └── soundtrack
-    ├── visual
-    │   └── photography
-    │       └── travel
-    │           └── japan
-    │               └── tokyo
-    └── software
-        └── games
-            └── oquonie
-                └── camilare
+Первая группа — **соседи текущей страницы**: все публичные узлы, имеющие того же непосредственного родителя.
 
-There is no architectural reason to stop at level three.
+Вторая группа — **дети текущей страницы**: все публичные узлы, для которых текущая страница является непосредственным родителем.
 
-## Columns versus levels
+В HTML это две соседние структуры:
 
-A level is a property of the content tree.
+    <nav>
+      <ul>соседи</ul>
+      <ul>дети</ul>
+    </nav>
 
-A column is a presentation choice.
+CSS отображает соседние `ul` как inline-block, поэтому они становятся визуальными колонками.
 
-They must not be confused.
+## Почему только две колонки
 
-A hierarchy can contain:
+Это принципиальное отличие от обычного дерева раскрывающихся меню.
 
-    audio
-      aliceffekt
-        laeisthic
-          children of bramble
-            detail
-              example
+Навигация не пытается показать всю цепочку:
 
-while the rendered navigation may display only the currently useful path and its immediate siblings across a limited number of horizontal groups.
+    research
+      computation
+        programming
+          concatenative
+            uxn
+              uxntal
+                uxntal stacks
 
-The number of columns is therefore a layout constraint, not a content-depth constraint.
+Вместо этого она показывает локальный контекст:
 
-## Current implementation
+    соседи текущего узла    дети текущего узла
 
-The current test implementation recognizes:
+Количество уровней исходного дерева не ограничивается. Ограничено только количество одновременно отображаемых навигационных групп.
 
-- top-level section indexes;
-- pages directly inside the current section;
-- pages one branch below the current section.
+Это позволяет одинаково работать с деревом глубиной 2 и с деревом глубиной 60.
 
-It is therefore not yet an unlimited-depth navigation engine.
+## Алгоритм
 
-The reference architecture is deeper than the current implementation.
+Для каждой страницы сначала нормализуется имя узла:
 
-## Why columns
+- `foo.md` → `foo`;
+- `foo/index.md` → `foo`;
+- корневой `index.md` → пустой узел.
 
-Each navigation group is an inline-block column. This keeps hierarchy visible without turning the page into a permanently open vertical tree.
+Затем определяется непосредственный родитель узла.
 
-The model preserves:
+Для текущего узла `C`:
 
-- local context;
-- sibling visibility;
-- short scanning paths;
-- dense information;
-- a direct relation between hierarchy and navigation.
+    P = parent(C)
 
-## Active path
+Первая колонка содержит все узлы `N`, для которых:
 
-The current path is represented by visual state. The current CSS distinguishes parent and self links.
+    parent(N) = P
 
-This makes the active branch visible without requiring a separate breadcrumb widget.
+Это братья и сёстры текущего узла. Сам текущий узел получает класс `self`.
 
-## Arbitrary depth
+Вторая колонка содержит все узлы `N`, для которых:
 
-A robust implementation should derive navigation from the directory tree rather than hard-code path positions such as parts[0], parts[1], parts[2].
+    parent(N) = C
 
-It should:
+Это непосредственные дети текущего узла.
 
-1. split the current path;
-2. identify every ancestor;
-3. collect siblings at each relevant level;
-4. render those levels as navigation groups;
-5. limit only the visible number of groups, not the underlying tree depth.
+Если детей нет, вторая колонка не выводится.
 
-The content tree remains the source of truth.
+Для корневой страницы родителем считается пустой узел, поэтому первая колонка содержит верхний уровень дерева.
 
-## Adding a deep branch
+## Важное свойство
 
-    research/
-        index.md
-        computation/
-            index.md
-            complexity/
-                index.md
-                knots.md
-                paper-computing/
-                    index.md
-                    paper-register.md
+Алгоритм не зависит от конкретного количества уровней.
 
-No manually maintained global menu should be required.
+Нельзя реализовывать его как:
 
-## Empty directories
+    parts[0]
+    parts[1]
+    parts[2]
 
-A directory with no public page should not become a navigation node merely because the filesystem contains the directory.
+и считать, что этого достаточно.
 
-A navigable branch needs a public landing page or another explicit content node.
+Глубина определяется структурой исходников. Меню каждый раз вычисляет только:
 
-## Navigation and search
+    current node
+    current parent
+    siblings
+    children
 
-Use ordinary HTML a href links for primary discovery.
+Поэтому добавление ещё одного уровня не требует изменения шаблона.
 
-Do not make primary navigation depend on JavaScript.
+## Источник данных
 
-Google explicitly recommends crawlable anchor links with descriptive anchor text.
+Источником истины является набор публичных страниц Jekyll.
 
-## Principle
+Каталог сам по себе не является пунктом меню.
 
-The navigation is a view of the tree.
+Чтобы узел появился в навигации, у него должна существовать публичная страница с непустым `title`.
 
-It is not the tree.
+Для каталожного узла это обычно:
 
-The filesystem/content hierarchy should remain capable of expressing more depth than the current visual viewport displays.
+    section/index.md
+
+Для страницы внутри существующего каталога:
+
+    section/page.md
+
+## Порядок
+
+Страницы сортируются Jekyll по `path` перед отображением. Поэтому порядок пунктов определяется деревом исходников и именами файлов, а не отдельным файлом меню.
+
+Если порядок является частью информационной архитектуры, его следует выражать структурой или явным метаданным, а не скрытой логикой шаблона.
+
+## HTML
+
+Навигация должна оставаться обычными ссылками:
+
+    <nav>
+      <ul>
+        <li><a href="...">...</a></li>
+      </ul>
+      <ul>
+        <li><a href="...">...</a></li>
+      </ul>
+    </nav>
+
+JavaScript для построения или открытия меню не требуется.
+
+Это одновременно упрощает реализацию, делает результат статическим и сохраняет обычные crawlable `a href` links.
+
+## CSS
+
+Минимальная модель:
+
+    nav { padding:45px 30px; }
+    nav ul {
+      display:inline-block;
+      vertical-align:top;
+      margin:0 45px 0 0;
+    }
+    nav ul li {
+      list-style-type:none;
+      white-space:pre;
+    }
+
+Следовательно, «колонка» не является специальным объектом данных. Это обычный соседний `ul`, которому CSS придаёт горизонтальное положение.
+
+## Проверка глубины
+
+В репозитории есть отдельный тестовый путь:
+
+    reference/navigation-depth/
+
+Он содержит последовательное дерево из 60 уровней.
+
+Проверка должна подтверждать:
+
+- сборку без ошибок;
+- наличие всех 60 страниц;
+- корректную ссылку на следующий уровень;
+- отсутствие рекурсивного зацикливания шаблона;
+- корректную первую колонку на глубокой странице;
+- корректную вторую колонку при наличии детей;
+- отсутствие искусственного ограничения на глубину.
+
+## Что нельзя делать
+
+Не следует:
+
+- рекурсивно вкладывать `ul` только ради воспроизведения дерева;
+- хранить глобальный список пунктов меню;
+- ограничивать дерево фиксированным числом уровней;
+- строить меню JavaScript-кодом;
+- считать наличие каталога достаточным условием для его появления;
+- использовать URL или текст страницы вместо структурного отношения parent/child.
+
+## Принцип
+
+Дерево может быть бесконечно глубоким.
+
+Навигация показывает только ближайшее окружение текущего узла.
+
+**Глубина данных и число визуальных колонок — разные величины.**
