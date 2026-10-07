@@ -31,3 +31,5 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify production URLs
+        run: bash scripts/check-production.sh "${{ steps.deployment.outputs.page_url }}"
