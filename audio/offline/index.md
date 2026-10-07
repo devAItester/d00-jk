@@ -1,10 +1,10 @@
 ---
 layout: default
-title: offline index
+title: offline
 arvelie: 00008
 ---
 
-# offline index
+# offline
 
 A small text node in the **audio/offline** branch.
 
