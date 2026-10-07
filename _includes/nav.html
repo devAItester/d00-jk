@@ -12,49 +12,66 @@
 {% assign current_grandparent_parts = current_parent_parts | pop %}
 {% assign current_grandparent = current_grandparent_parts | join: "/" %}
 
-<nav>
-  {% comment %}
-    The reference navigation is a local slice of the tree.
+{% comment %}
+  Reference navigation is a local slice of the content tree.
 
-    depth 0: children(current)
-    depth 1: children(root), children(current)
-    depth 2+: children(grandparent), children(parent), children(current)
+  root page:
+    column 1 = children(root)
 
-    In other words:
-      column 1 = siblings of the parent
-      column 2 = siblings of the current page
-      column 3 = children of the current page
+  depth 1:
+    column 1 = children(root)
+    column 2 = children(current)
 
-    The root and shallow cases naturally collapse to fewer columns.
-  {% endcomment %}
+  depth 2+:
+    column 1 = children(grandparent)
+    column 2 = children(parent)
+    column 3 = children(current)
 
-  {% if current == "" %}
-    <ul>
-      {% for p in pages %}
-        {% if p.title and p.title != "" %}
-          {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
-          {% if node == "index" %}
-            {% assign node = "" %}
-          {% endif %}
-          {% assign parts = node | split: "/" %}
-          {% assign parent_parts = parts | pop %}
-          {% assign parent = parent_parts | join: "/" %}
+  Thus the three visible groups are:
+    siblings(parent) / siblings(current) / children(current)
+  where the shallow cases naturally have fewer groups.
+{% endcomment %}
 
-          {% if node != "" and parent == "" %}
-            <li>
-              <a href="{{ p.url | relative_url }}"{% if node == current %} class="self"{% endif %}>{{ p.title }}</a>
-            </li>
-          {% endif %}
-        {% endif %}
-      {% endfor %}
-    </ul>
-  {% else %}
-    {% if current_parent == "" %}
-      {% assign has_col_1 = true %}
-    {% else %}
-      {% assign has_col_1 = true %}
+{% assign has_col_1 = false %}
+{% assign has_col_2 = false %}
+{% assign has_col_3 = false %}
+
+{% for p in pages %}
+  {% if p.title and p.title != "" %}
+    {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
+    {% if node == "index" %}
+      {% assign node = "" %}
     {% endif %}
+    {% assign parts = node | split: "/" %}
+    {% assign parent_parts = parts | pop %}
+    {% assign parent = parent_parts | join: "/" %}
 
+    {% if current == "" %}
+      {% if node != "" and parent == "" %}
+        {% assign has_col_1 = true %}
+      {% endif %}
+    {% else %}
+      {% if current_parent == "" %}
+        {% if node != "" and parent == "" %}
+          {% assign has_col_1 = true %}
+        {% endif %}
+      {% elsif node != "" and parent == current_grandparent %}
+        {% assign has_col_1 = true %}
+      {% endif %}
+
+      {% if node != "" and parent == current_parent %}
+        {% assign has_col_2 = true %}
+      {% endif %}
+
+      {% if node != "" and parent == current %}
+        {% assign has_col_3 = true %}
+      {% endif %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+<nav>
+  {% if has_col_1 %}
     <ul>
       {% for p in pages %}
         {% if p.title and p.title != "" %}
@@ -66,7 +83,13 @@
           {% assign parent_parts = parts | pop %}
           {% assign parent = parent_parts | join: "/" %}
 
-          {% if current_parent == "" %}
+          {% if current == "" %}
+            {% if node != "" and parent == "" %}
+              <li>
+                <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
+              </li>
+            {% endif %}
+          {% elsif current_parent == "" %}
             {% if node != "" and parent == "" %}
               <li>
                 <a href="{{ p.url | relative_url }}"{% if node == current %} class="self"{% endif %}>{{ p.title }}</a>
@@ -80,7 +103,9 @@
         {% endif %}
       {% endfor %}
     </ul>
+  {% endif %}
 
+  {% if has_col_2 %}
     <ul>
       {% for p in pages %}
         {% if p.title and p.title != "" %}
@@ -100,7 +125,9 @@
         {% endif %}
       {% endfor %}
     </ul>
+  {% endif %}
 
+  {% if has_col_3 %}
     <ul>
       {% for p in pages %}
         {% if p.title and p.title != "" %}
