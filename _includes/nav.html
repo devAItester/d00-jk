@@ -1,9 +1,25 @@
-{% assign dirs = site.pages | sort: "url" %}
-<nav class="tree">
-  <a href="{{ '/' | relative_url }}">flatfiletxtdb</a>
-  {% for p in dirs %}
-    {% if p.url != "/" and p.url == p.dir %}
-      <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
+{% assign top = site.pages | sort: "url" %}
+<nav>
+  <ul>
+    <li><a href="{{ '/' | relative_url }}">index</a></li>
+    {% for p in top %}
+      {% if p.url != '/' and p.url contains '/' %}
+        {% assign first = p.url | split: '/' | slice: 1 | first %}
+        {% if p.url contains '/' and p.url == '/' | append: first | append: '/index.html' %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </ul>
+  <ul>
+    {% assign current = page.dir | split: '/' %}
+    {% assign section = current[1] %}
+    {% if section %}
+      <li><a href="{{ '/' | append: section | append: '/' | relative_url }}" class="parent">{{ section }}</a></li>
+      {% for p in site.pages %}
+        {% if p.url contains '/' | append: section | append: '/' %}
+          {% if p.url != page.url %}<li><a href="{{ p.url | relative_url }}">{{ p.title }}</a></li>{% endif %}
+        {% endif %}
+      {% endfor %}
     {% endif %}
-  {% endfor %}
+  </ul>
 </nav>
