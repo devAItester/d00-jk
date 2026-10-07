@@ -44,6 +44,8 @@ def fetch(url):
             with urllib.request.urlopen(request, timeout=20) as response:
                 return response.status, response.geturl(), response.headers.get("content-type", ""), response.read()
         except urllib.error.HTTPError as exc:
+            if exc.code == 404:
+                raise
             last = exc
             if attempt == 12:
                 raise
