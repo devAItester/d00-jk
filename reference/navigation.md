@@ -162,7 +162,6 @@ Oscean не получает меню из HTML или из отдельного
     tests.md
     navigation.md
     path-and-url.md
-    sitemap.md
     svg-identity.md
 
 `_menu` — служебный metafile без расширения. Он не является страницей сайта.
