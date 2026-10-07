@@ -69,6 +69,15 @@ urls = list(dict.fromkeys(urls))
 if not urls:
     raise SystemExit("No navigation URLs found on production homepage")
 
+missing = base + "/this-page-must-not-exist-404-check.html"
+try:
+    fetch(missing)
+except urllib.error.HTTPError as exc:
+    if exc.code != 404:
+        raise SystemExit(f"Expected HTTP 404 for missing page, got {exc.code}: {missing}")
+else:
+    raise SystemExit(f"Expected HTTP 404 for missing page: {missing}")
+
 for url in urls:
     status, final, content_type, body = fetch(url)
     if status < 200 or status >= 400:
