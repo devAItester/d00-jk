@@ -1,7 +1,7 @@
 ---
 layout: default
 title: audio
-permalink: /audio/
+permalink: /audio/index.html
 ---
 <h1>audio</h1>
 <ul>
