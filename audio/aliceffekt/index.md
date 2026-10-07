@@ -1,10 +1,10 @@
 ---
 layout: default
-title: aliceffekt index
+title: aliceffekt
 arvelie: 00002
 ---
 
-# aliceffekt index
+# aliceffekt
 
 A small text node in the **audio/aliceffekt** branch.
 
