@@ -10,6 +10,7 @@ import sys
 import time
 import urllib.request
 import urllib.error
+import urllib.parse
 
 base = sys.argv[1]
 
@@ -43,7 +44,6 @@ def fetch(url):
             with urllib.request.urlopen(request, timeout=20) as response:
                 return response.status, response.geturl(), response.headers.get("content-type", ""), response.read()
         except urllib.error.HTTPError as exc:
-            exc.add_note(f"URL: {url}")
             last = exc
             if attempt == 12:
                 raise
@@ -71,10 +71,7 @@ parser.feed(body.decode("utf-8", "replace"))
 
 urls = []
 for href in parser.links:
-    if href.startswith("/"):
-        urls.append(base + href)
-    elif href.startswith(base):
-        urls.append(href)
+    urls.append(urllib.parse.urljoin(base + "/", href))
 
 urls = list(dict.fromkeys(urls))
 if not urls:
