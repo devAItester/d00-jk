@@ -1,4 +1,5 @@
 ---
+permalink: /visual/palette.html
 layout: default
 title: palette index
 arvelie: 00010
