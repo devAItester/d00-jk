@@ -1,7 +1,7 @@
 ---
 layout: default
 title: visual
-permalink: /visual/
+permalink: /visual/index.html
 ---
 <h1>visual</h1>
 <ul>
