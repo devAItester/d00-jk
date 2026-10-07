@@ -1,10 +1,10 @@
 ---
 layout: default
-title: generative index
+title: generative
 arvelie: 00004
 ---
 
-# generative index
+# generative
 
 A small text node in the **audio/generative** branch.
 
