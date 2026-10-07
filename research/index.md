@@ -1,7 +1,7 @@
 ---
 layout: default
 title: research
-permalink: /research/
+permalink: /research/index.html
 ---
 <h1>research</h1>
 <ul>
