@@ -144,7 +144,6 @@ title: tests
     tests.md
     navigation.md
     path-and-url.md
-    sitemap.md
     svg-identity.md
 
 Проверка должна также подтверждать два отрицательных случая:
