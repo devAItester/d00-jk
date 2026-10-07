@@ -1,0 +1,9 @@
+{% assign dirs = site.pages | sort: "url" %}
+<nav class="tree">
+  <a href="{{ '/' | relative_url }}">flatfiletxtdb</a>
+  {% for p in dirs %}
+    {% if p.url != "/" and p.url == p.dir %}
+      <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
+    {% endif %}
+  {% endfor %}
+</nav>
