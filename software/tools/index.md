@@ -1,4 +1,5 @@
 ---
+permalink: /software/tools.html
 layout: default
 title: tools index
 arvelie: 00022
