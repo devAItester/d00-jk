@@ -1,3 +1,42 @@
+{% assign current = page.path | remove: ".md" | remove: "/index" %}
+{% assign current_parts = current | split: "/" %}
+{% assign current_parent_parts = current_parts | pop %}
+{% assign current_parent = current_parent_parts | join: "/" %}
+
 <nav>
-  {% include nav-tree.html parent="" %}
+  <ul>
+    {% for p in site.pages %}
+      {% if p.title and p.title != "" %}
+        {% assign node = p.path | remove: ".md" | remove: "/index" %}
+        {% assign parts = node | split: "/" %}
+        {% assign parent_parts = parts | pop %}
+        {% assign parent = parent_parts | join: "/" %}
+
+        {% if parent == current_parent %}
+          <li>
+            <a href="{{ p.url | relative_url }}"{% if node == current %} class="self"{% endif %}>{{ p.title }}</a>
+          </li>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </ul>
+
+  {% unless current == "" %}
+    <ul>
+      {% for p in site.pages %}
+        {% if p.title and p.title != "" %}
+          {% assign node = p.path | remove: ".md" | remove: "/index" %}
+          {% assign parts = node | split: "/" %}
+          {% assign parent_parts = parts | pop %}
+          {% assign parent = parent_parts | join: "/" %}
+
+          {% if parent == current %}
+            <li>
+              <a href="{{ p.url | relative_url }}"{% if node == current %} class="self"{% endif %}>{{ p.title }}</a>
+            </li>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </ul>
+  {% endunless %}
 </nav>
