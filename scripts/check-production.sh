@@ -7,7 +7,9 @@ base="${base%/}"
 python3 - "$base" <<'PY'
 import html.parser
 import sys
+import time
 import urllib.request
+import urllib.error
 
 base = sys.argv[1]
 
@@ -35,8 +37,17 @@ class Parser(html.parser.HTMLParser):
 
 def fetch(url):
     request = urllib.request.Request(url, headers={"User-Agent": "flatfiletxtdb-production-check"})
-    with urllib.request.urlopen(request, timeout=20) as response:
-        return response.status, response.geturl(), response.headers.get("content-type", ""), response.read()
+    last = None
+    for attempt in range(1, 13):
+        try:
+            with urllib.request.urlopen(request, timeout=20) as response:
+                return response.status, response.geturl(), response.headers.get("content-type", ""), response.read()
+        except urllib.error.HTTPError as exc:
+            last = exc
+            if attempt == 12:
+                raise
+            time.sleep(5)
+    raise last
 
 status, final, content_type, body = fetch(base + "/")
 if status < 200 or status >= 400:
