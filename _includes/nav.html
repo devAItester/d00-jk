@@ -38,7 +38,7 @@
         {% assign has_col_1 = true %}
       {% endif %}
 
-      {% if node != "" and parent == current_parent %}
+      {% if current_parent != "" and node != "" and parent == current_parent %}
         {% assign has_col_2 = true %}
       {% endif %}
 
