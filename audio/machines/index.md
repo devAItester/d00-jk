@@ -1,10 +1,10 @@
 ---
 layout: default
-title: machines index
+title: machines
 arvelie: 00006
 ---
 
-# machines index
+# machines
 
 A small text node in the **audio/machines** branch.
 
