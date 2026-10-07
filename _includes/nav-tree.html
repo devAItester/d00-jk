@@ -1,0 +1,31 @@
+{% assign pages = site.pages | sort: "path" %}
+<ul>
+  {% for p in pages %}
+    {% assign node = p.path | remove: ".md" | remove: "/index" %}
+    {% assign rest = node %}
+    {% if include.parent != "" %}
+      {% assign prefix = include.parent | append: "/" %}
+      {% unless node contains prefix %}
+        {% continue %}
+      {% endunless %}
+      {% assign rest = node | remove_first: prefix %}
+    {% endif %}
+    {% unless rest contains "/" %}
+      {% if node != "" and p.title and p.title != "" %}
+        {% assign current_class = "" %}
+        {% if p.url == page.url %}
+          {% assign current_class = "self" %}
+        {% elsif include.parent != "" %}
+          {% assign parent_prefix = include.parent | append: "/" %}
+          {% if node contains parent_prefix %}
+            {% assign current_class = "parent" %}
+          {% endif %}
+        {% endif %}
+        <li>
+          <a href="{{ p.url | relative_url }}" {% if current_class != "" %}class="{{ current_class }}"{% endif %}>{{ p.title }}</a>
+          {% include nav-tree.html parent=node %}
+        </li>
+      {% endif %}
+    {% endunless %}
+  {% endfor %}
+</ul>
