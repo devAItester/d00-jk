@@ -15,7 +15,6 @@ title: structure
         default.html
     _includes/
         nav.html
-        nav-tree.html
         style.css
 
     audio/
@@ -34,6 +33,10 @@ title: structure
         html.md
         spacing.md
         color.md
+
+    development/
+        index.md
+        navigation.md
 
     media/
         README.md
@@ -100,4 +103,9 @@ README внутри `media/` описывает ресурсное дерево 
 
 Иерархия каталогов и файлов является источником истины.
 
-Меню не дублирует её отдельным YAML-списком. Jekyll получает pages, а recursive include строит из их путей визуальное представление дерева.
+Меню не дублирует её отдельным YAML-списком. Jekyll получает публичные pages, нормализует их пути в узлы дерева и строит две локальные группы:
+
+    siblings(current)
+    children(current)
+
+Глубина исходного дерева не кодируется в шаблоне меню.
