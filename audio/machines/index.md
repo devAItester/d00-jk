@@ -1,4 +1,5 @@
 ---
+permalink: /audio/machines.html
 layout: default
 title: machines
 arvelie: 00006
