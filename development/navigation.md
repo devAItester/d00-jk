@@ -54,6 +54,9 @@ title: navigation development
     foo.md       → foo
     foo/index.md → foo
     index.md     → пустая строка
+    index.html   → пустая строка
+
+Корневая страница этого репозитория — `index.html`, поэтому она нормализуется отдельно.
 
 В Liquid это можно выразить так:
 
@@ -134,7 +137,8 @@ title: navigation development
 
 Минимальная реализация `_includes/nav.html`:
 
-    {% raw %}{% assign current = page.path | remove: ".md" | remove: "/index" %}
+    {% raw %}{% assign current = page.path | remove: ".md" | remove: ".html" | remove: "/index" %}
+    {% if current == "index" %}{% assign current = "" %}{% endif %}
     {% assign current_parts = current | split: "/" %}
     {% assign current_parent_parts = current_parts | pop %}
     {% assign current_parent = current_parent_parts | join: "/" %}
@@ -143,7 +147,8 @@ title: navigation development
       <ul>
         {% for p in site.pages %}
           {% if p.title and p.title != "" %}
-            {% assign node = p.path | remove: ".md" | remove: "/index" %}
+            {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
+            {% if node == "index" %}{% assign node = "" %}{% endif %}
             {% assign parts = node | split: "/" %}
             {% assign parent_parts = parts | pop %}
             {% assign parent = parent_parts | join: "/" %}
@@ -161,7 +166,8 @@ title: navigation development
         <ul>
           {% for p in site.pages %}
             {% if p.title and p.title != "" %}
-              {% assign node = p.path | remove: ".md" | remove: "/index" %}
+              {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
+              {% if node == "index" %}{% assign node = "" %}{% endif %}
               {% assign parts = node | split: "/" %}
               {% assign parent_parts = parts | pop %}
               {% assign parent = parent_parts | join: "/" %}
