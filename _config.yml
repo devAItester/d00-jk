@@ -1,4 +1,5 @@
 title: flatfiletxtdb
+baseurl: /flatfiletxtdb
 permalink: /:path/:basename.html
 markdown: kramdown
 exclude:
