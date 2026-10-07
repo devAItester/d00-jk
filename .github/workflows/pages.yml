@@ -15,6 +15,7 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: false
+      - run: bash scripts/check-pages.sh
       - run: gem install jekyll
       - run: jekyll build
       - uses: actions/upload-pages-artifact@v3
