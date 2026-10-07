@@ -1,7 +1,7 @@
 ---
 layout: default
 title: software
-permalink: /software/index.html
+permalink: /software.html
 ---
 <h1>software</h1>
 <ul>
