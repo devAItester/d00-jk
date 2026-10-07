@@ -1,4 +1,5 @@
 ---
+permalink: /software/languages.html
 layout: default
 title: languages index
 arvelie: 00020
