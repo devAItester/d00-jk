@@ -1,4 +1,5 @@
 ---
+permalink: /visual/pixel.html
 layout: default
 title: pixel index
 arvelie: 00012
