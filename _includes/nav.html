@@ -1,3 +1,4 @@
+{% assign pages = site.pages | sort: "path" %}
 {% assign current = page.path | remove: ".md" | remove: ".html" | remove: "/index" %}
 {% if current == "index" %}
   {% assign current = "" %}
