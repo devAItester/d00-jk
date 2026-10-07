@@ -60,7 +60,8 @@ title: navigation development
 
 В Liquid это можно выразить так:
 
-    {% raw %}{% assign node = p.path | remove: ".md" | remove: "/index" %}{% endraw %}
+    {% raw %}{% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
+    {% if node == "index" %}{% assign node = "" %}{% endif %}{% endraw %}
 
 Так `foo/index.md` и логический узел `foo` становятся одним объектом.
 
@@ -266,7 +267,7 @@ title: navigation development
 
 ### Корень
 
-Для `index.md`:
+Для корневого `index.html`:
 
     current = ""
     current_parent = ""
