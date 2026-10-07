@@ -58,7 +58,7 @@ actual = {href: title for href, title in parser.links if href}
 source_titles = []
 source_modes = {}
 for path in pathlib.Path(".").rglob("*.md"):
-    if any(part in {".git", "_site"} for part in path.parts) or path.name == "README.md":
+    if any(part in {".git", "_site"} for part in path.parts) or path.name in {"README.md", "404.html"}:
         continue
     text = path.read_text(encoding="utf-8")
     if not text.startswith("---\n"):
