@@ -5,18 +5,51 @@ title: navigation development
 
 # Navigation development
 
-Эта статья описывает реализацию меню с нуля в чистом Jekyll-репозитории.
+Эта статья описывает воспроизводимую реализацию навигации XXIIVV/Oscean в чистом Jekyll-репозитории.
 
-Цель — получить статическую навигацию, которая автоматически следует дереву Markdown-файлов, не требует отдельного manifest меню и не ограничивает глубину вложенности.
+Важно: референсное меню — не двухколоночное `siblings + children`. На глубине 2+ оно показывает три локальные группы:
 
-## 1. Создать чистый репозиторий
+    siblings(parent)
+    siblings(current)
+    children(current)
+
+Именно эту модель нужно воспроизводить.
+
+## 1. Что является референсом
+
+Живой сайт:
+
+    https://wiki.xxiivv.com/site/home.html
+
+Описание движка:
+
+    https://wiki.xxiivv.com/site/oscean.html
+
+В исходнике Oscean соответствующая логика находится в:
+
+    src/oscean.tal
+
+Ключевые процедуры:
+
+    page/<build-nav>
+    page/<build-children>
+    html/<local>
+
+`page/<build-nav>` выбирает, сколько групп построить в зависимости от глубины текущего терма.
+
+`page/<build-children>` печатает одну группу как обычный `ul`.
+
+`html/<local>` создаёт ссылку и добавляет `self` для текущего терма и `parent` для его родителя.
+
+## 2. Создать чистый репозиторий
 
 Минимальная структура:
 
     .
     ├── _config.yml
     ├── _includes/
-    │   └── nav.html
+    │   ├── nav.html
+    │   └── style.css
     ├── _layouts/
     │   └── default.html
     ├── index.md
@@ -30,167 +63,192 @@ title: navigation development
     permalink: /:path/:basename.html
     markdown: kramdown
 
-## 2. Определить контракт страницы
+## 3. Определить узлы дерева
 
-Каждая публичная Markdown-страница должна иметь непустой `title`:
+Каждая публичная страница должна иметь непустой `title`:
 
     ---
     layout: default
     title: section
     ---
 
-Без этого страницу нельзя надёжно использовать как пункт автоматически построенного меню.
+Каталог становится навигационным узлом только тогда, когда существует его публичная страница:
 
-## 3. Нормализовать имя узла
+    section/index.md
 
-Для меню URL не используется как структура данных.
+Обычная страница внутри узла:
 
-Используется путь исходной страницы:
+    section/page.md
 
-    page.path
+Отдельный manifest меню не создаётся.
+
+## 4. Нормализовать путь
+
+Для Jekyll-реплики используется `page.path`.
 
 Нормализация:
 
     foo.md       → foo
     foo/index.md → foo
-    index.md     → пустая строка
-    index.html   → пустая строка
+    index.md     → ""
+    index.html   → ""
 
-Корневая страница этого репозитория — `index.html`, поэтому она нормализуется отдельно.
-
-В Liquid это можно выразить так:
+Пример Liquid:
 
     {% raw %}{% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
-    {% if node == "index" %}{% assign node = "" %}{% endif %}{% endraw %}
+    {% if node == "index" %}
+      {% assign node = "" %}
+    {% endif %}{% endraw %}
 
-Так `foo/index.md` и логический узел `foo` становятся одним объектом.
+После этого `section/index.md` становится логическим узлом `section`.
 
-## 4. Вычислить непосредственного родителя
+## 5. Вычислить текущий путь и родителей
 
-У нормализованного пути последний компонент — имя текущего узла.
-
-Например:
-
-    reference/navigation
-
-разбивается на:
-
-    reference
-    navigation
-
-Удаление последнего компонента даёт:
-
-    reference
-
-В Liquid массив можно обработать фильтром `pop`:
-
-    {% raw %}{% assign parts = node | split: "/" %}
-    {% assign parent_parts = parts | pop %}
-    {% assign parent = parent_parts | join: "/" %}{% endraw %}
-
-Для верхнего уровня результатом будет пустая строка.
-
-## 5. Построить первую колонку
-
-Для текущей страницы вычисляются:
+Для текущего узла:
 
     current
     current_parent
+    current_grandparent
 
-Первая колонка выбирает все страницы, у которых:
+Например:
 
-    parent == current_parent
+    reference/navigation-depth/level-01
 
-Например, для:
+даёт:
 
-    audio/aliceffekt
+    current            = reference/navigation-depth/level-01
+    current_parent     = reference/navigation-depth
+    current_grandparent = reference
 
-первая колонка содержит:
+В Liquid:
 
-    aliceffekt
-    generative
-    machines
-    offline
+    {% raw %}{% assign current_parts = current | split: "/" %}
+    {% assign current_parent_parts = current_parts | pop %}
+    {% assign current_parent = current_parent_parts | join: "/" %}
 
-если все эти узлы являются непосредственными детьми `audio`.
+    {% assign current_grandparent_parts = current_parent_parts | pop %}
+    {% assign current_grandparent = current_grandparent_parts | join: "/" %}{% endraw %}
+
+## 6. Построить группы по глубине
+
+Это центральное правило.
+
+### Root
+
+Для корневой страницы:
+
+    current = ""
+
+выводятся:
+
+    children(root)
+
+### Depth 1
+
+Для узла верхнего уровня:
+
+    children(root)
+    children(current)
+
+### Depth 2+
+
+Для любого более глубокого узла:
+
+    children(grandparent)
+    children(parent)
+    children(current)
+
+Количество данных уровней может быть любым. Число визуальных групп — максимум три.
+
+## 7. Что такое children
+
+Для узла `X`:
+
+    children(X) = все публичные страницы N,
+                 для которых parent(N) == X
+
+Для каждой группы создаётся отдельный соседний `ul`.
+
+Не делать:
+
+    <ul>
+      <li>
+        <ul>...</ul>
+      </li>
+    </ul>
+
+для имитации колонок.
+
+Должно быть:
+
+    <nav>
+      <ul>...</ul>
+      <ul>...</ul>
+      <ul>...</ul>
+    </nav>
+
+## 8. Состояния self и parent
 
 Текущая страница получает:
 
     class="self"
 
-## 6. Построить вторую колонку
+Её непосредственный родитель получает:
 
-Вторая колонка выбирает:
+    class="parent"
 
-    parent == current
-
-Для:
+Пример для:
 
     audio/aliceffekt
 
-это будут непосредственные страницы и разделы внутри:
+группа соседей содержит:
 
-    audio/aliceffekt/
+    audio
+    ...
 
-Если детей нет, вторая колонка не выводится.
+Если `audio` является непосредственным родителем, ссылка на `audio` получает:
 
-## 7. Полный шаблон
+    class="parent"
 
-Минимальная реализация `_includes/nav.html`:
+Сама `aliceffekt` получает:
 
-    {% raw %}{% assign current = page.path | remove: ".md" | remove: ".html" | remove: "/index" %}
-    {% if current == "index" %}{% assign current = "" %}{% endif %}
-    {% assign current_parts = current | split: "/" %}
-    {% assign current_parent_parts = current_parts | pop %}
-    {% assign current_parent = current_parent_parts | join: "/" %}
+    class="self"
 
-    <nav>
-      <ul>
-        {% for p in site.pages %}
-          {% if p.title and p.title != "" %}
-            {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
-            {% if node == "index" %}{% assign node = "" %}{% endif %}
-            {% assign parts = node | split: "/" %}
-            {% assign parent_parts = parts | pop %}
-            {% assign parent = parent_parts | join: "/" %}
+Это соответствует Oscean `html/<local>` и CSS:
 
-            {% if parent == current_parent %}
-              <li>
-                <a href="{{ p.url | relative_url }}"{% if node == current %} class="self"{% endif %}>{{ p.title }}</a>
-              </li>
-            {% endif %}
-          {% endif %}
-        {% endfor %}
-      </ul>
+    nav ul li a.parent,
+    nav ul li a.self {
+      text-decoration:underline;
+    }
 
-      {% unless current == "" %}
-        <ul>
-          {% for p in site.pages %}
-            {% if p.title and p.title != "" %}
-              {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
-              {% if node == "index" %}{% assign node = "" %}{% endif %}
-              {% assign parts = node | split: "/" %}
-              {% assign parent_parts = parts | pop %}
-              {% assign parent = parent_parts | join: "/" %}
+## 9. Реализовать Liquid
 
-              {% if parent == current %}
-                <li>
-                  <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
-                </li>
-              {% endif %}
-            {% endif %}
-          {% endfor %}
-        </ul>
-      {% endunless %}
-    </nav>{% endraw %}
+Псевдокод:
 
-Шаблон намеренно не является рекурсивным.
+    {% raw %}current = normalize(page.path)
+    parent = parent(current)
+    grandparent = parent(parent)
 
-Рекурсия здесь была бы неправильной моделью представления: дерево контента может быть глубоким, но меню показывает только локальный контекст.
+    if current == "":
+        groups = [children(root)]
+    elsif parent == "":
+        groups = [
+            children(root),
+            children(current)
+        ]
+    else:
+        groups = [
+            children(grandparent),
+            children(parent),
+            children(current)
+        ]
+    endif{% endraw %}
 
-## 8. Подключить меню
+Liquid не предоставляет удобный способ создать массив групп и пройти его как обычную структуру, поэтому на практике три `ul` пишутся явно с условиями. Это не рекурсия и не отдельная модель данных.
 
-В основном layout:
+## 10. Подключить меню
+
+В layout:
 
     <body>
     <header>...</header>
@@ -200,13 +258,15 @@ title: navigation development
     <main>
     {{ content }}
     </main>
+
+    <footer>...</footer>
     </body>
 
-Никакого JavaScript для построения меню не требуется.
+Базовая навигация не требует JavaScript.
 
-## 9. Сделать две колонки визуально
+## 11. CSS референса
 
-Минимальный CSS:
+Основные правила:
 
     nav {
       padding:45px 30px;
@@ -229,15 +289,16 @@ title: navigation development
       padding:0 4px;
     }
 
+    nav ul li a.parent,
     nav ul li a.self {
       text-decoration:underline;
     }
 
-Таким образом HTML остаётся обычным списком, а колонка является только способом его размещения.
+Колонка — следствие `inline-block`, а не отдельный layout-компонент.
 
-## 10. Проверить произвольную глубину
+## 12. Тестировать реальное дерево
 
-Создать тест:
+Создать:
 
     test/
         index.md
@@ -248,154 +309,95 @@ title: navigation development
                 level-03/
                     index.md
 
-и продолжить его до требуемой глубины.
+Продолжить хотя бы до 60 уровней.
 
-Для проверки именно алгоритма полезно создать не менее 60 уровней.
+Проверять нужно страницы разных глубин:
 
-На странице:
+    /
+    /test/
+    /test/level-01/
+    /test/level-01/level-02/
+    ...
+    /test/.../level-60/
 
-    test/level-01/.../level-60/
+Особенно важен глубокий узел: он должен показывать ровно три локальные группы, если у текущего узла есть дети.
 
-должно выполняться то же правило, что и на странице второго или третьего уровня:
+## 13. Проверять HTML
 
-    column 1 = siblings
-    column 2 = children
+Успешный Jekyll build недостаточен.
 
-Никакой специальной ветки для `level-60` не должно существовать.
-
-## 11. Проверить крайние случаи
-
-### Корень
-
-Для корневого `index.html`:
-
-    current = ""
-    current_parent = ""
-
-Первая колонка содержит верхний уровень.
-
-Вторая колонка не нужна.
-
-### Верхний раздел
-
-Для:
-
-    audio/index.md
-
-первая колонка содержит другие верхнеуровневые разделы и `audio`, а вторая — непосредственных детей `audio`.
-
-### Обычная страница
-
-Для:
-
-    audio/aliceffekt/notes.md
-
-первая колонка содержит соседей внутри `audio/aliceffekt/`.
-
-Вторая колонка отсутствует, если у `notes` нет детей.
-
-### Глубокая страница
-
-Для:
-
-    level-01/.../level-60/index.md
-
-первая колонка определяется только непосредственным родителем.
-
-Количество предшествующих уровней не имеет значения.
-
-## 12. Проверять результат на HTML, а не только на сборке
-
-Успешный Jekyll build означает только то, что генератор смог построить сайт.
-
-Для меню отдельно проверяются:
+Проверить:
 
     <nav>
       <ul>...</ul>
       <ul>...</ul>
+      <ul>...</ul>
     </nav>
 
-и отсутствие:
+И состояния:
 
-    <ul>
-      <li>
-        <ul>
-          <li>
-            ...
+    class="parent"
+    class="self"
 
-если вложенность не предусмотрена дизайном.
+Проверить также:
 
-Также проверяется:
+- `href` ведут на существующие страницы;
+- пустые `ul` не выводятся;
+- внутри navigation нет вложенных `ul`;
+- нет JavaScript для построения меню;
+- нет фиксированного ограничения глубины;
+- на root не выводится сам root как пункт.
 
-- текущая ссылка;
-- отсутствие пустых пунктов;
-- корректность `href`;
-- наличие только публичных страниц;
-- отсутствие циклического include;
-- отсутствие лишних колонок;
-- корректная работа на глубоком тестовом узле.
+## 14. Что было ошибочно в предыдущей версии
 
-## 13. Почему эта реализация лучше рекурсивного дерева
-
-Рекурсивный шаблон естественно моделирует дерево:
-
-    node
-      └── children
-            └── children
-                  └── ...
-
-Но референсное меню не является раскрытым деревом.
-
-Оно является **локальным срезом дерева**:
+Предыдущая документация описывала модель как:
 
     siblings(current)
     children(current)
 
-Поэтому прямой двухколоночный алгоритм:
+и поэтому фактически теряла контекст родителя на глубине 2+.
 
-- проще;
-- не требует рекурсивного include;
-- не создаёт вложенных `ul`;
-- не зависит от максимальной глубины;
-- проще проверяется;
-- лучше соответствует CSS-модели.
+Референс Oscean делает иначе:
 
-## 14. Правило сопровождения
+    children(grandparent)
+    children(parent)
+    children(current)
 
-При добавлении новой страницы разработчик не должен редактировать меню.
+Кроме того, предыдущая версия не воспроизводила состояние:
 
-Достаточно создать страницу в правильном каталоге:
+    class="parent"
+
+Это влияет не только на HTML, но и на визуальное подчёркивание активной ветви.
+
+## 15. Правило сопровождения
+
+Разработчик не редактирует меню при добавлении страницы.
+
+Достаточно создать узел в дереве:
 
     development/
         new-topic.md
 
-с корректным front matter:
+с корректным front matter.
 
-    ---
-    layout: default
-    title: new topic
-    ---
-
-После сборки она автоматически появляется в соответствующей локальной колонке.
-
-Если изменение структуры страницы требует правки `nav.html`, это повод проверить сам алгоритм: структура контента должна оставаться источником истины.
+Структура исходников остаётся единственным источником истины. Если для добавления страницы требуется изменение `nav.html`, сначала нужно проверить алгоритм и модель дерева.
 
 ## Итог
 
-Минимальная архитектура состоит из трёх частей:
+Минимальная архитектура:
 
     filesystem
         ↓
     site.pages
         ↓
-    siblings + children
+    current / parent / grandparent
         ↓
-    two <ul> columns
+    children(grandparent)
+    children(parent)
+    children(current)
         ↓
-    CSS inline-block
+    1–3 соседних <ul>
+        ↓
+    inline-block CSS
 
-Глубина дерева не кодируется в шаблоне.
-
-Количество колонок не кодируется в дереве.
-
-Именно это разделение позволяет воспроизвести модель в чистом репозитории без ручного меню и без JavaScript.
+Это реплика именно модели Oscean, а не абстрактного многоуровневого sidebar.
