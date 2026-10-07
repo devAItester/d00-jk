@@ -1,6 +1,6 @@
 title: flatfiletxtdb
 baseurl: /flatfiletxtdb
-permalink: /:path/:basename.html
+permalink: /:path/:basename:output_ext
 markdown: kramdown
 exclude:
   - README.md
