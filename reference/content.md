@@ -5,101 +5,143 @@ title: content
 
 # Content
 
-This page defines the reproducible content workflow.
-
-## One page
-
-A page is a single Markdown document.
-
-    audio/aliceffekt/notes.md
-
-Front matter:
-
-    ---
-    layout: default
-    title: notes
-    date: 2026-10-07
-    ---
-
-    # Notes
-
-    Content.
-
-The filename defines the stable path component. The title defines the document label.
-
-The current permalink configuration is:
-
-    /:path/:basename.html
-
-Therefore changing a filename or directory normally changes its public URL.
-
-## A section containing pages
-
-    audio/
-        index.md
-        aliceffekt/
-            index.md
-            notes.md
-            field-recording.md
-
-The branch landing page is aliceffekt/index.md. The individual pages are ordinary Markdown files beside it.
+Контент добавляется и удаляется изменением файлового дерева. Отдельный глобальный реестр страниц не требуется.
 
 ## Add a page
 
-1. Create the file in the intended directory.
-2. Add valid front matter.
-3. Add a meaningful title.
-4. Add semantic content.
-5. Add useful internal links.
-6. Build the site.
-7. Check the generated URL and navigation.
+Создай Markdown-файл внутри нужного каталога:
+
+    software/
+        tools/
+            terminal.md
+
+Минимальное содержимое:
+
+    ---
+    layout: default
+    title: terminal
+    ---
+
+    # Terminal
+
+    Содержимое страницы.
+
+После сборки текущий permalink `/:path/:basename.html` создаст URL:
+
+    /software/tools/terminal.html
+
+Если нужен другой публичный URL, его следует задавать явно через front matter `permalink`.
 
 ## Add a section
 
-Create the directory and its landing page:
+Для нового раздела создай каталог и его landing page:
 
-    science/
-        index.md
-        physics.md
-        chemistry.md
-
-For deeper structure:
-
-    science/
-        index.md
-        physics/
+    research/
+        systems/
             index.md
-            quantum.md
-            optics.md
+            notes.md
 
-The index files establish public landing pages at the intended levels.
+`index.md` делает `systems` публичным node и даёт ему собственный URL:
 
-## Remove a page
+    /research/systems/
 
-1. Search for incoming links.
-2. Decide whether the URL is obsolete or moved.
-3. Update or remove internal links.
-4. Delete the source file.
-5. Rebuild.
-6. Check for stale links.
+Остальные Markdown-файлы становятся дочерними страницами.
 
-If an old URL has external traffic or search visibility, use a deliberate redirect or replacement strategy instead of silently abandoning it.
+## Add a post to an existing section
+
+Добавь новый файл рядом с существующими страницами:
+
+    software/
+        tools/
+            index.md
+            terminal.md
+            shell.md
+            tmux.md
+
+Навигация строится автоматически по пути.
 
 ## Move a page
 
-Treat a move as a URL migration:
+Перемещение файла меняет его URL, если front matter не сохраняет прежний permalink.
 
-    old URL -> new URL
+Например:
 
-Update internal links and, where appropriate, provide a redirect.
+    research/old.md
+    ->
+    research/systems/old.md
 
-## Delete a section
+изменяет URL с:
 
-Remove its public content and landing page, then update incoming links and remove resources only when they are no longer referenced.
+    /research/old.html
 
-## Content versus repository metadata
+на:
 
-    README.md       = repository documentation
-    index.md        = public section landing page
-    post.md         = public content
-    media/*         = resource
+    /research/systems/old.html
+
+Для уже опубликованной страницы изменение URL следует считать миграцией, а не простой операцией filesystem.
+
+## Remove a page
+
+Удаление Markdown-файла удаляет соответствующую страницу из следующей сборки.
+
+Если старый URL уже был опубликован или проиндексирован, необходимо отдельно решить вопрос с redirect или иным сохранением URL. Удаление файла само по себе не является HTTP redirect.
+
+## Remove a section
+
+Удаление `index.md` убирает сам каталог из navigation tree как публичный section node. Удаление дочерних страниц убирает соответствующие nodes.
+
+Пустой каталог не должен создавать navigation node.
+
+## Internal links
+
+Используй обычные HTML/Markdown links с реальным `href`:
+
+    [terminal](../tools/terminal.html)
+
+или:
+
+    <a href="../tools/terminal.html">terminal</a>
+
+Для поисковых систем и accessibility важнее реальный destination URL и осмысленный anchor text, чем визуальный способ оформления ссылки.
+
+## Title contract
+
+Пустой `title` недопустим.
+
+Причина не только в navigation. `title` участвует в формировании HTML `<title>`, подписи узла меню и других представлений страницы.
+
+В репозитории есть отдельная CI-проверка `scripts/check-pages.sh`, которая завершает сборку с ошибкой, если Markdown-страница не содержит непустой `title` в front matter.
+
+Это принципиальное отличие от простой проверки в Liquid:
+
+    {% if p.title %}
+      ...
+    {% endif %}
+
+Liquid-защита предотвращает пустой HTML, но молча скрывает дефект исходника. CI должна делать дефект явным.
+
+## Publication dates
+
+Дата исходной публикации — это свойство контента, а не дата последнего изменения файла.
+
+Если контент переносится из внешней системы, исходную дату следует хранить явно:
+
+    ---
+    layout: default
+    title: terminal
+    datePublished: 2024-05-18
+    ---
+
+Дата публикации и дата изменения не должны подменять друг друга. Для статей, где дата имеет смысл для поиска, её можно дополнительно выводить в HTML и передавать в соответствующие structured data.
+
+Google допускает `datePublished` и `dateModified` в Article structured data. urlGoogle — Article structured datahttps://developers.google.com/search/docs/appearance/structured-data/article
+
+## Principle
+
+Файл создаёт страницу.
+
+Каталог создаёт контекст.
+
+`index.md` создаёт публичный узел каталога.
+
+Navigation читает это дерево, а не поддерживает собственную копию структуры.
