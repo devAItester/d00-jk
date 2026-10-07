@@ -82,7 +82,7 @@ for path in pathlib.Path(".").rglob("*.md"):
 if Counter(source_titles) != Counter(actual.values()):
     raise SystemExit(
         "Homepage links do not represent exactly the source pages.\n"
-        f"source={sorted(source)}\nactual={sorted(actual.values())}"
+        f"source={sorted(source_titles)}\nactual={sorted(actual.values())}"
     )
 
 def output_for(href):
@@ -102,5 +102,17 @@ for href, title in actual.items():
     if href.endswith("/") and not source_modes.get(title, False):
         raise SystemExit(f"Non-index page has a directory URL: {href} ({title})")
 
-print(f"Generated page URLs OK: {len(actual)} pages resolve to HTML output.")
+# The site root is the only generated index.html. All linked content pages must use explicit .html URLs.
+index_outputs = [p for p in site_dir.rglob("index.html") if p.is_file()]
+if index_outputs != [site_dir / "index.html"]:
+    raise SystemExit(
+        "Unexpected index.html outputs: "
+        + ", ".join(str(p) for p in sorted(index_outputs))
+    )
+
+for href, title in actual.items():
+    if href != baseurl + "/" and not href.endswith(".html"):
+        raise SystemExit(f"Non-index page URL does not end in .html: {href} ({title})")
+
+print(f"Generated page URLs OK: {len(actual)} pages resolve to HTML output; only the site root is index.html.")
 PY
