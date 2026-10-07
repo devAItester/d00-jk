@@ -1,34 +1,3 @@
 <nav>
-  {% assign parts = page.path | split: '/' %}
-  {% assign section = parts[0] %}
-  <ul>
-    <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="self"{% endif %}>index</a></li>
-    {% for p in site.pages %}
-      {% assign pp = p.path | split: '/' %}
-      {% if pp.size == 2 and pp[1] == 'index.md' %}
-        <li><a href="{{ p.url | relative_url }}" {% if pp[0] == section %}class="parent"{% endif %}>{{ pp[0] }}</a></li>
-      {% endif %}
-    {% endfor %}
-  </ul>
-  {% if parts.size > 1 %}
-  <ul>
-    {% for p in site.pages %}
-      {% assign pp = p.path | split: '/' %}
-      {% if pp.size == 2 and pp[0] == section %}
-        <li><a href="{{ p.url | relative_url }}" {% if p.url == page.url %}class="self"{% endif %}>{{ p.title }}</a></li>
-      {% endif %}
-    {% endfor %}
-  </ul>
-  {% endif %}
-  {% if parts.size > 2 %}
-    {% assign branch = parts[1] %}
-    <ul>
-      {% for p in site.pages %}
-        {% assign pp = p.path | split: '/' %}
-        {% if pp.size == 3 and pp[0] == section and pp[1] == branch %}
-          <li><a href="{{ p.url | relative_url }}" {% if p.url == page.url %}class="self"{% endif %}>{{ p.title }}</a></li>
-        {% endif %}
-      {% endfor %}
-    </ul>
-  {% endif %}
+  {% include nav-tree.html parent="" %}
 </nav>
