@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML/CSS optimization — comparison</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:serif;line-height:1.5;max-width:900px;margin:40px auto;padding:0 20px}
+pre{background:#eee;padding:15px;overflow:auto}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid #999;text-align:left;padding:6px;vertical-align:top}
+</style>
+</head>
+<body>
+<h1>HTML/CSS optimization</h1>
+<p>Контрольный отчёт. Этот файл обновляется по мере исследования.</p>
+
+<h2>Baseline</h2>
+<table>
+<tr><th>Объект</th><th>Состояние</th></tr>
+<tr><td>Reference HTML</td><td><code>XXIIVV/oscean/site/home.html</code>, commit <code>7ae8d4a3329fab51389d70fad330717540fb0f57</code></td></tr>
+<tr><td>Reference CSS</td><td><code>XXIIVV/oscean/links/main.css</code>, тот же commit</td></tr>
+<tr><td>Our CSS</td><td>Практически совпадает с reference CSS</td></tr>
+<tr><td>Primary candidate</td><td>Генерация navigation HTML в <code>_includes/nav.html</code></td></tr>
+</table>
+
+<h2>Правило</h2>
+<p>Не оптимизируем ради современности. Сначала устанавливаем, что именно объективно хуже: валидность, семантика, accessibility, сложность генератора, размер output, layout или поддерживаемость.</p>
+
+<h2>Findings</h2>
+<ol>
+<li><strong>CSS units:</strong> у reference units есть; преимущественно используется px. Замена единиц сама по себе не является оптимизацией.</li>
+<li><strong>CSS architecture:</strong> существенного расхождения с upstream пока не обнаружено.</li>
+<li><strong>HTML generation:</strong> наш template layer существенно сложнее статического HTML reference.</li>
+<li><strong>Navigation:</strong> наиболее заметная дополнительная логика находится в Liquid, где структура дерева вычисляется несколькими проходами.</li>
+</ol>
+
+<h2>Следующий эксперимент</h2>
+<p>Сопоставить один и тот же набор контента с фактическим generated HTML и reference HTML, затем проверить output по HTML-стандартам и accessibility. Изменения production до этого этапа не вносить.</p>
+</body>
+</html>
