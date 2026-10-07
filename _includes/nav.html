@@ -1,34 +1,106 @@
 {% assign pages = site.pages | sort: "path" %}
+
 {% assign current = page.path | remove: ".md" | remove: ".html" | remove: "/index" %}
 {% if current == "index" %}
   {% assign current = "" %}
 {% endif %}
+
 {% assign current_parts = current | split: "/" %}
 {% assign current_parent_parts = current_parts | pop %}
 {% assign current_parent = current_parent_parts | join: "/" %}
 
+{% assign current_grandparent_parts = current_parent_parts | pop %}
+{% assign current_grandparent = current_grandparent_parts | join: "/" %}
+
 <nav>
-  <ul>
-    {% for p in pages %}
-      {% if p.title and p.title != "" %}
-        {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
-        {% if node == "index" %}
-          {% assign node = "" %}
-        {% endif %}
-        {% assign parts = node | split: "/" %}
-        {% assign parent_parts = parts | pop %}
-        {% assign parent = parent_parts | join: "/" %}
+  {% comment %}
+    The reference navigation is a local slice of the tree.
 
-        {% if node != "" and parent == current_parent %}
-          <li>
-            <a href="{{ p.url | relative_url }}"{% if node == current %} class="self"{% endif %}>{{ p.title }}</a>
-          </li>
-        {% endif %}
-      {% endif %}
-    {% endfor %}
-  </ul>
+    depth 0: children(current)
+    depth 1: children(root), children(current)
+    depth 2+: children(grandparent), children(parent), children(current)
 
-  {% unless current == "" %}
+    In other words:
+      column 1 = siblings of the parent
+      column 2 = siblings of the current page
+      column 3 = children of the current page
+
+    The root and shallow cases naturally collapse to fewer columns.
+  {% endcomment %}
+
+  {% if current == "" %}
+    <ul>
+      {% for p in pages %}
+        {% if p.title and p.title != "" %}
+          {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
+          {% if node == "index" %}
+            {% assign node = "" %}
+          {% endif %}
+          {% assign parts = node | split: "/" %}
+          {% assign parent_parts = parts | pop %}
+          {% assign parent = parent_parts | join: "/" %}
+
+          {% if node != "" and parent == "" %}
+            <li>
+              <a href="{{ p.url | relative_url }}"{% if node == current %} class="self"{% endif %}>{{ p.title }}</a>
+            </li>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </ul>
+  {% else %}
+    {% if current_parent == "" %}
+      {% assign has_col_1 = true %}
+    {% else %}
+      {% assign has_col_1 = true %}
+    {% endif %}
+
+    <ul>
+      {% for p in pages %}
+        {% if p.title and p.title != "" %}
+          {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
+          {% if node == "index" %}
+            {% assign node = "" %}
+          {% endif %}
+          {% assign parts = node | split: "/" %}
+          {% assign parent_parts = parts | pop %}
+          {% assign parent = parent_parts | join: "/" %}
+
+          {% if current_parent == "" %}
+            {% if node != "" and parent == "" %}
+              <li>
+                <a href="{{ p.url | relative_url }}"{% if node == current %} class="self"{% endif %}>{{ p.title }}</a>
+              </li>
+            {% endif %}
+          {% elsif node != "" and parent == current_grandparent %}
+            <li>
+              <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
+            </li>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </ul>
+
+    <ul>
+      {% for p in pages %}
+        {% if p.title and p.title != "" %}
+          {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
+          {% if node == "index" %}
+            {% assign node = "" %}
+          {% endif %}
+          {% assign parts = node | split: "/" %}
+          {% assign parent_parts = parts | pop %}
+          {% assign parent = parent_parts | join: "/" %}
+
+          {% if node != "" and parent == current_parent %}
+            <li>
+              <a href="{{ p.url | relative_url }}"{% if node == current %} class="self"{% endif %}>{{ p.title }}</a>
+            </li>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </ul>
+
     <ul>
       {% for p in pages %}
         {% if p.title and p.title != "" %}
@@ -48,5 +120,5 @@
         {% endif %}
       {% endfor %}
     </ul>
-  {% endunless %}
+  {% endif %}
 </nav>
