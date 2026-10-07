@@ -5,142 +5,189 @@ title: html
 
 # HTML
 
-The objective is valid, semantic, crawlable HTML with a small presentation layer.
+HTML-разметка должна одновременно удовлетворять семантической модели документа, требованиям accessibility и условиям нормального crawling/indexing.
 
-## Document metadata
+Нормативная основа — WHATWG HTML Living Standard и WCAG 2.2. Для поискового представления дополнительно используются рекомендации Google Search Central.
 
-The head should contain only valid metadata elements.
+## Document structure
 
-At minimum:
+Базовый каркас:
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Descriptive page title</title>
+    <!doctype html>
+    <html lang="ru">
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>...</title>
+        <meta name="description" content="...">
+      </head>
+      <body>
+        <header>...</header>
+        <nav>...</nav>
+        <main>...</main>
+        <footer>...</footer>
+      </body>
+    </html>
 
-The current layout supplies the first two and constructs the title from the page title.
-
-A future SEO layer should add page-specific description and canonical URL where appropriate.
+`lang` должен соответствовать языку страницы. Для русскоязычного содержимого — `lang="ru"`.
 
 ## Title
 
-Every indexable page should have a unique descriptive title.
+У документа должен быть один содержательный `title`:
 
-The HTML specification requires at most one title element in a document and expects the title to identify the document out of context.
+    <title>terminal — flatfiletxtdb</title>
+
+Он должен идентифицировать документ вне контекста страницы.
 
 ## Headings
 
-Use:
+Основной заголовок — `h1`. Последующие уровни отражают логическую структуру:
 
-    h1
-      h2
-        h3
-          h4
-            h5
-              h6
+    <h1>Page</h1>
+    <h2>Section</h2>
+    <h3>Subsection</h3>
 
-Do not skip levels merely to obtain a desired visual size.
+Нельзя использовать heading только ради получения нужного размера текста. Уровень заголовка сообщает структуру документа и вспомогательным технологиям.
 
 ## Paragraphs
 
-Use p for paragraphs. Do not create paragraphs from repeated br elements.
+Обычный текст оформляется через `p`:
+
+    <p>Текст абзаца.</p>
+
+Не следует создавать абзацы через последовательность `br`, CSS-отступы или пустые элементы.
 
 ## Links
 
-Use real hyperlinks:
+Основная форма ссылки:
 
-    <a href="/reference/styleguide.html">styleguide</a>
+    <a href="/research/">research</a>
 
-The destination belongs in href, not only in JavaScript.
-
-Anchor text should describe the destination.
+Google рекомендует реальные `a href` links с описательным anchor text для crawlable navigation. urlGoogle — crawlable linkshttps://developers.google.com/search/docs/crawling-indexing/links-crawlable
 
 ## Images
 
-Informative:
+Информативное изображение:
 
-    <img src="/media/architecture.jpg"
-         width="1600"
-         height="1067"
-         alt="Diagram of the site's directory structure">
+    <img src="/media/example.jpg"
+         width="1200"
+         height="800"
+         alt="Краткое описание информации на изображении">
 
-Decorative:
+`alt` передаёт смысл изображения, а не обязан буквально перечислять каждый визуальный объект.
+
+Для декоративного изображения:
 
     <img src="/media/ornament.svg" alt="">
 
-Functional:
+Для изображения, являющегося единственным содержимым ссылки, `alt` должен описывать функцию destination:
 
     <a href="/gallery/">
-      <img src="/media/gallery.svg" alt="Gallery">
+      <img src="/media/gallery.png" alt="Gallery">
     </a>
 
-Do not omit alt on an HTML img.
+Intrinsic `width` и `height` следует указывать, когда они известны: это позволяет браузеру заранее зарезервировать геометрию и уменьшить layout shift.
 
-Width and height should be supplied when intrinsic dimensions are known. They reserve aspect-ratio space and reduce layout shift.
+Для responsive images можно использовать:
 
-## Responsive images
-
-    <img src="/media/photo-1200.jpg"
-         srcset="/media/photo-600.jpg 600w,
-                 /media/photo-1200.jpg 1200w,
-                 /media/photo-2400.jpg 2400w"
-         sizes="(max-width: 624px) 100vw, 624px"
-         width="2400"
-         height="1600"
-         alt="...">
+    <img
+      src="/media/photo-800.jpg"
+      srcset="/media/photo-400.jpg 400w,
+              /media/photo-800.jpg 800w,
+              /media/photo-1200.jpg 1200w"
+      sizes="(max-width: 624px) 100vw, 624px"
+      width="1200"
+      height="800"
+      alt="...">
 
 ## Figure
 
-Use figure when image and caption form one semantic unit:
+`figure` используется для самостоятельного иллюстративного объекта:
 
     <figure>
-      <img ...>
-      <figcaption>...</figcaption>
+      <img src="/media/example.jpg"
+           width="1200"
+           height="800"
+           alt="...">
+      <figcaption>Описание или credit.</figcaption>
     </figure>
 
+## Code
+
+Inline code:
+
+    <code>git status</code>
+
+Block code:
+
+    <pre><code>git status
+    git log --oneline</code></pre>
+
+WHATWG определяет `pre` как блок предварительно форматированного текста; для программного кода семантической парой является `pre` + `code`. citeturn3search12
+
+В данном стиле code-блок визуально отделён от основного текста CSS, а не дополнительной HTML-структурой.
+
 ## Video
+
+Для нативного видео используется `video`:
 
     <video controls width="1280" height="720">
       <source src="/media/example.mp4" type="video/mp4">
     </video>
 
+Размеры должны соответствовать intrinsic ratio.
+
 ## Iframe
 
-Use iframe only for an actual external document or service. Do not use it as a substitute for ordinary site content.
+Если внешний документ действительно является частью содержания:
 
-## Language
+    <iframe
+      src="https://example.org/"
+      title="Example"
+      width="640"
+      height="360">
+    </iframe>
 
-Set the primary document language:
-
-    <html lang="en">
-
-Mark genuine language changes with lang.
+`title` необходим для accessibility. Внешнее встраивание не следует использовать для обычной текстовой информации, которую можно дать непосредственно в HTML.
 
 ## Accessibility
 
-Minimum rules:
+Критические правила:
 
-- informative images have useful alt;
-- decorative images use alt="";
-- links have an accessible name;
-- headings express hierarchy;
-- tables express data relationships;
-- important information exists as text in the DOM.
+- один логический `h1`;
+- последовательная heading hierarchy;
+- осмысленные link names;
+- корректный `alt`;
+- `alt=""` для чисто декоративных изображений;
+- клавиатурно доступные интерактивные элементы;
+- цвет не является единственным носителем смысла;
+- видимый focus state должен сохраняться;
+- содержательный текст должен присутствовать в DOM.
 
 ## Search indexing
 
-Google discovers pages through crawlable links, sitemaps and redirects. Primary discovery should therefore remain ordinary HTML navigation.
+Индексация не требует специальной «SEO-разметки» вместо нормального HTML.
 
-Important image content should use ordinary img elements, descriptive filenames, useful alt text and relevant surrounding text.
+Базовый приоритет:
 
-A sitemap should contain canonical URLs that the site wants indexed.
+1. доступный и уникальный основной контент;
+2. содержательный `title`;
+3. понятная heading hierarchy;
+4. crawlable internal links;
+5. crawlable images с корректными `alt`;
+6. стабильные canonical URLs;
+7. sitemap для URL, которые действительно нужно обнаружить и индексировать.
 
-## References
+Google отдельно подчёркивает важность people-first content и доступности основного содержимого, а structured data должна соответствовать видимому содержанию. citeturn3search10turn3search7
 
-Primary sources:
+## Structured data
 
-- WHATWG HTML Living Standard
-- W3C WCAG 2.2 techniques
-- Google Search Central: SEO for developers
-- Google Search Central: image SEO
-- Google Search Central: crawlable links
-- Google Search Central: sitemaps
+Structured data добавляется только там, где она точно описывает страницу.
+
+Для статьи возможны `Article`/соответствующий подтип, `headline`, `image`, `datePublished`, `dateModified` и `author`. Это дополнительный сигнал понимания контента, а не замена семантическому HTML. citeturn3search2
+
+## Standards
+
+- WHATWG HTML Living Standard — нормативная модель HTML.
+- W3C WCAG 2.2 Techniques — практические accessibility techniques.
+- Google Search Central — crawling, indexing, links, images и structured data.
