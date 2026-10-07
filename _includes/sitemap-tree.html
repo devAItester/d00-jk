@@ -8,7 +8,7 @@
     {% assign parts = node | split: "/" %}
     {% assign parent_parts = parts | pop %}
     {% assign parent = parent_parts | join: "/" %}
-    {% if parent == include.parent %}
+    {% if node != "" and parent == include.parent %}
       {% assign found = true %}
     {% endif %}
   {% endif %}
@@ -25,7 +25,7 @@
     {% assign parts = node | split: "/" %}
     {% assign parent_parts = parts | pop %}
     {% assign parent = parent_parts | join: "/" %}
-    {% if parent == include.parent %}
+    {% if node != "" and parent == include.parent %}
       <li>
         <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
         {% include sitemap-tree.html parent=node pages=include.pages %}
