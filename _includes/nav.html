@@ -37,7 +37,7 @@
 {% assign has_col_3 = false %}
 
 {% for p in pages %}
-  {% if p.title and p.title != "" %}
+  {% if p.path != "404.html" and p.title and p.title != "" %}
     {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
     {% if node == "index" %}
       {% assign node = "" %}
@@ -74,7 +74,7 @@
   {% if has_col_1 %}
     <ul>
       {% for p in pages %}
-        {% if p.title and p.title != "" %}
+        {% if p.path != "404.html" and p.title and p.title != "" %}
           {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
           {% if node == "index" %}
             {% assign node = "" %}
@@ -102,7 +102,7 @@
   {% if has_col_2 %}
     <ul>
       {% for p in pages %}
-        {% if p.title and p.title != "" %}
+        {% if p.path != "404.html" and p.title and p.title != "" %}
           {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
           {% if node == "index" %}
             {% assign node = "" %}
@@ -122,7 +122,7 @@
   {% if has_col_3 %}
     <ul>
       {% for p in pages %}
-        {% if p.title and p.title != "" %}
+        {% if p.path != "404.html" and p.title and p.title != "" %}
           {% assign node = p.path | remove: ".md" | remove: ".html" | remove: "/index" %}
           {% if node == "index" %}
             {% assign node = "" %}
