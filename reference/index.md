@@ -1,7 +1,7 @@
 ---
 layout: default
 title: reference
-permalink: /reference/
+permalink: /reference/index.html
 ---
 
 # Reference
