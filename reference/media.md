@@ -5,9 +5,13 @@ title: media
 
 # Media
 
-Media is a resource layer, not a page hierarchy.
+`media/` — отдельный ресурсный слой. Он хранит изображения, видео, SVG и другие бинарные объекты, которые используются содержательными страницами.
 
-The reference resource tree separates binary assets by role:
+Media не должна превращаться в отдельный параллельный каталог статей.
+
+## Directory model
+
+Рекомендуемая организация:
 
     media/
         diary/
@@ -17,179 +21,200 @@ The reference resource tree separates binary assets by role:
         refs/
         services/
 
-The reference repository contains about 1,900 media-tree entries, dominated by JPG and PNG, with SVG, GIF, MP4 and other formats also present.
+Названия каталогов описывают функцию ресурса, а не место, где он случайно используется сегодня.
 
-## Roles
+## Filename
 
-generic/ contains reusable photographs, illustrations and other general content assets.
+Имя файла должно быть стабильным и описательным:
 
-icon/ contains small interface and decorative assets.
+    macbook-air-2014-keyboard.jpg
+    terminal-layout-dark.png
+    navigation-tree.svg
 
-identity/ contains identity assets such as marks and logos.
+Не следует использовать:
 
-refs/ contains reference material and locally retained external visual resources.
+    IMG_0042.JPG
+    screenshot-final-final2.png
+    image1.png
 
-services/ contains assets associated with external services.
-
-diary/ is a chronological image collection. Numeric filenames are appropriate there because sequence is the semantic identity.
-
-## README versus media
-
-media/README.md documents the resource repository for maintainers.
-
-It is not an article and should not appear in public navigation.
-
-Public documentation about the media system belongs under reference/, for example:
-
-    reference/media.md
-
-## File naming
-
-For ordinary content images prefer descriptive names:
-
-    paper-computer.jpg
-    paper-computer-detail.jpg
-    directory-tree.svg
-
-Avoid meaningless names such as IMG_0382.jpg where the filename can convey useful context.
-
-For numbered sequences, numeric names are acceptable.
+Для поискового обнаружения Google рекомендует описательные filenames и релевантный surrounding text. urlGoogle — image SEOhttps://developers.google.com/search/docs/appearance/google-images
 
 ## Formats
 
-JPEG: photographs and continuous-tone images.
+Практическое правило:
 
-PNG: lossless raster graphics, transparency and hard-edged artwork where appropriate.
+| Format | Основное назначение |
+| --- | --- |
+| JPEG | фотографии |
+| PNG | изображения с lossless quality или прозрачностью |
+| SVG | векторная графика и иконки |
+| GIF | только когда нужна именно GIF-анимация |
+| MP4 | видео |
+| WebP/AVIF | современные responsive image variants, если pipeline их поддерживает |
 
-SVG: vector diagrams and simple icons where appropriate.
-
-GIF: only when its animation or compatibility characteristics are actually required.
-
-MP4: native browser video when local video is appropriate.
+Выбор формата определяется содержимым, качеством и стоимостью загрузки, а не только привычкой.
 
 ## Dimensions
 
-There is no universal required pixel size.
+У каждого изображения должны быть известны intrinsic dimensions.
 
-The reference presentation has two important measures:
+В HTML:
 
-    main text measure: approximately 624px
-    lead figure width: approximately 800px
+    <img
+      src="/media/example.jpg"
+      width="1200"
+      height="800"
+      alt="...">
 
-Ordinary content images should normally be prepared around their rendered content width.
+Для responsive variants сохраняется исходное aspect ratio.
 
-Lead figures can use larger sources because they can extend beyond the prose measure.
+Текстовая мера референса — около 624px. Обычные изображения вписываются в неё.
 
-Do not serve a 4000px source when a 624px rendering is sufficient unless the larger source has a real user benefit.
+Lead figure может быть шире:
 
-## Intrinsic dimensions
+    width: 800px;
+    max-width: 100vw;
 
-When intrinsic dimensions are known, put width and height on the img element:
+Это визуальное правило референса, а не требование поисковой системы.
 
-    <img src="/media/photo.jpg"
-         width="1600"
-         height="1067"
-         alt="...">
+## 3/4-width versus full-width
 
-CSS can still make the image responsive.
+Основная композиция строится вокруг текстовой колонки, поэтому большая часть изображений визуально находится примерно в той же области, что и текст.
 
-These attributes communicate the intrinsic aspect ratio and help the browser reserve layout space before the image loads.
+Широкое первое изображение используется как композиционный акцент. Оно не обязано иметь специальный SEO-статус.
+
+SEO определяется прежде всего crawlability, релевантностью, `alt`, surrounding text и качеством самого ресурса. citeturn3search0
 
 ## Responsive images
 
-When multiple useful resolutions exist:
+Для нескольких физических размеров:
 
-    <img src="/media/photo-1200.jpg"
-         srcset="/media/photo-600.jpg 600w,
-                 /media/photo-1200.jpg 1200w,
-                 /media/photo-2400.jpg 2400w"
-         sizes="(max-width: 624px) 100vw, 624px"
-         width="2400"
-         height="1600"
-         alt="...">
+    <img
+      src="/media/photo-800.jpg"
+      srcset="/media/photo-400.jpg 400w,
+              /media/photo-800.jpg 800w,
+              /media/photo-1200.jpg 1200w"
+      sizes="(max-width: 624px) 100vw, 624px"
+      width="1200"
+      height="800"
+      alt="...">
 
-Use srcset and sizes when they materially reduce transferred bytes. Do not manufacture variants without a performance reason.
+`srcset` описывает доступные ресурсы, `sizes` — предполагаемую отображаемую ширину.
 
-## Alt text
+Для lead image `sizes` должен соответствовать фактической responsive geometry, а не всегда текстовой мере 624px.
 
-Informative:
+## Loading
 
-    alt="Hand-drawn diagram of the directory hierarchy"
+Для изображений ниже первого экрана допустим native lazy loading:
 
-Decorative:
+    loading="lazy"
+
+Критическое первое изображение не следует без причины лениво загружать.
+
+`width` и `height` остаются обязательной практикой независимо от loading strategy.
+
+## Alt
+
+### Informative
+
+    alt="Схема каталогов и страниц сайта"
+
+`alt` должен передавать информацию, ради которой изображение присутствует.
+
+### Decorative
 
     alt=""
 
-Functional link:
+Пустой `alt` означает, что изображение не добавляет содержательного сообщения.
+
+### Functional
+
+Если изображение является ссылкой:
 
     <a href="/gallery/">
-      <img src="/media/gallery.svg" alt="Gallery">
+      <img src="/media/gallery.png" alt="Gallery">
     </a>
 
-Alt text is an alternative to the information or function of an image. It is not a filename and not necessarily a caption.
+Здесь `alt` сообщает назначение ссылки.
 
-## Captions and credits
+WCAG прямо разделяет informative, decorative и functional images и требует соответствующей text alternative. 
+
+## Figure and caption
+
+Когда изображение имеет самостоятельную связь с подписью:
 
     <figure>
-      <img src="/media/photo.jpg"
-           width="1600"
-           height="1067"
-           alt="Aerial photograph of the coastline">
-      <figcaption>
-        Coastline, 2026. Photograph by Example Author.
-      </figcaption>
+      <img src="/media/example.jpg"
+           width="1200"
+           height="800"
+           alt="...">
+      <figcaption>Источник: ...</figcaption>
     </figure>
 
-A credit is not a substitute for useful alt text.
+Caption не должен дублировать `alt` без необходимости.
 
-## Licensing metadata
+## Credits and licensing
 
-Where authorship or licensing matters, retain provenance in repository metadata or a dedicated record.
-
-Google supports image metadata such as:
+Для внешних или лицензированных материалов следует сохранять как минимум:
 
 - creator;
-- credit text;
+- credit;
 - copyright notice;
 - license;
-- acquisition/license page.
+- источник получения;
+- исходный URL, если он нужен для проверки;
+- дату получения, если provenance имеет значение.
 
-This can be supplied through structured data or embedded IPTC photo metadata. Claim only rights that actually exist.
+Для image metadata Google поддерживает creator, creditText, copyrightNotice и license в соответствующем structured data/ImageObject контексте. urlGoogle — image metadata structured datahttps://developers.google.com/search/docs/appearance/structured-data/image-license-metadata
 
-## Search visibility
+Метаданные файла и HTML metadata не являются взаимозаменяемыми. Если provenance критичен, его лучше сохранять и в исходном media asset, и в контексте страницы.
 
-Google recommends:
+## SVG
 
-- public crawlable image URLs;
-- descriptive filenames;
-- useful alt text;
-- relevant surrounding text;
-- relevant page context;
-- valid HTML;
-- canonical URLs in a sitemap;
-- no accidental robots or noindex blocking.
+SVG подходит для векторных схем, иконок и другой графики.
 
-Lazy loading is acceptable when implemented with crawlable image elements and without requiring user interaction to reveal essential content.
+Если SVG содержит самостоятельный смысл, accessibility должна обеспечиваться содержательной текстовой альтернативой или доступным текстом рядом.
 
-## Full-width images
+SVG, полученный из внешнего источника, следует рассматривать как потенциально исполняемый XML-ресурс и не принимать вслепую из непроверенного источника.
 
-The reference CSS intentionally permits the first figure to exceed the ordinary text measure.
+## Search discovery
 
-This is a composition rule, not an SEO rule.
+Чтобы изображение могло быть найдено поисковой системой:
 
-Use the wide treatment when the image benefits from a larger visual field. Do not enlarge every image merely to imitate it.
+- URL изображения должен быть crawlable;
+- файл не должен блокироваться robots/noindex-механизмами;
+- изображение должно быть реально доступно на странице или через другой crawlable context;
+- filename должен быть описательным;
+- `alt` должен соответствовать смыслу;
+- surrounding text должен быть релевантным;
+- при необходимости URL изображения можно включить в sitemap.
 
-## Checklist
+Google отдельно рекомендует проверять crawlability изображений и использовать sitemap для облегчения discovery. urlGoogle — image SEOhttps://developers.google.com/search/docs/appearance/google-images
 
-Before adding an asset:
+## Resource budget
 
-- choose its media class;
-- use a descriptive filename unless sequence is meaningful;
-- preserve intrinsic dimensions;
-- choose an appropriate format;
-- record provenance/license where required;
-- prepare appropriate alt text;
-- add a caption when context or credit is needed;
-- check rendered dimensions;
-- verify a real img element is present;
-- verify the URL is crawlable.
+Размер файла — не нормативная величина, а performance budget.
+
+Практический подход:
+
+- сначала выбрать правильный формат;
+- затем уменьшить pixel dimensions до реального display size;
+- затем оптимизировать compression;
+- затем добавить responsive variants;
+- затем проверить фактическую загрузку в браузере.
+
+Нельзя задавать универсальное правило «каждая картинка должна быть не больше N KB»: фотография, SVG и короткое видео имеют принципиально разные профили данных.
+
+## Rule of thumb
+
+    source asset
+        ↓
+    intrinsic dimensions
+        ↓
+    optimized derivatives
+        ↓
+    semantic HTML
+        ↓
+    alt + caption + credit
+        ↓
+    crawlable URL
