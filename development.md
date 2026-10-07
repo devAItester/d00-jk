@@ -16,3 +16,4 @@ title: development
 - [Path and URL](path-and-url.html) — почему цепочка меню и URL могут выглядеть по-разному, как Jekyll строит адрес из исходного пути и permalink и как проверять результат.
 - [Sitemap](sitemap.html) — как строится HTML-карта сайта из того же дерева страниц.
 - [SVG identity](svg-identity.html) — зачем сайту отдельные SVG-лого и иконка, как они переключаются для светлой и тёмной темы и какие свойства считать обязательными.
+- [Semantic HTML](semantic-html.html) — правила семантической HTML-разметки: sectioning elements, main, article, headings, footer, accessibility и граница между HTML-смыслом и CSS-представлением.
