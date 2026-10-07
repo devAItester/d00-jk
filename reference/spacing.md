@@ -5,107 +5,150 @@ title: spacing
 
 # Spacing
 
-The spacing system combines web implementation with principles familiar from typography and print composition.
+Интервалы здесь рассматриваются одновременно как CSS-параметры референса и как типографический инструмент.
 
-## Reference measurements
+Числа, взятые непосредственно из CSS референса, следует отличать от рекомендаций полиграфии и UI-дизайна. Первые являются измерением конкретной реализации; вторые — проектными эвристиками.
 
-    body text: 16px
-    paragraph line-height: 160%
-    main left offset: 30px
-    standard vertical rhythm: 30px
-    navigation padding: 45px 30px
-    navigation column gap: 45px
-    header margin: 50px 30px
-    header right margin: 60px
-    article inner padding: 25px
-    list line-height: 25px
-    figure caption padding: 15px 0
-    ordinary image bottom margin: 25px
-    lead figure width: 800px
-    main text max-width: 624px
+## Reference values
 
-These measurements create a repeated rhythm rather than unrelated margins.
+Проверенные значения:
 
-## 30px rhythm
-
-The dominant interval separates paragraphs, blocks, navigation/content and footer regions.
-
-A repeated interval is easier to perceive than a collection of unrelated values.
-
-## Line-height
-
-At 16px body text, 160% produces approximately:
-
-    16 × 1.6 = 25.6px
-
-This is close to the 25px list line-height and produces a coherent baseline rhythm.
-
-## Text measure
-
-The main column is about 624px.
-
-This is a reference implementation value, not a universal typographic law.
-
-## Print-derived principle: measure before decoration
-
-Constrain prose first. Let images and navigation exceed the prose measure only when their visual role requires it.
-
-## Print-derived principle: whitespace is structural
-
-Whitespace should separate conceptual units.
-
-The reference intervals can be read as:
-
-    15px -> tight association
-    25px -> image/list rhythm
-    30px -> block separation
-    45px -> navigation/header breathing room
-
-These are implementation values, not standards.
-
-## Print-derived principle: hierarchy by proportion
-
-Use:
-
-- size;
-- position;
-- whitespace;
-- weight;
-- repetition;
-
-before introducing additional colors or ornamental components.
+| Element | Value |
+| --- | ---: |
+| body font-size | 16px |
+| paragraph line-height | 160% |
+| main measure | 624px |
+| base vertical rhythm | 30px |
+| nav padding | 45px 30px |
+| nav column gap | 45px |
+| article inner padding | 25px |
+| list line-height | 25px |
+| figure caption padding | 15px 0 |
+| ordinary image bottom margin | 25px |
+| lead figure width | 800px |
+| lead figure left offset | -30px |
+| code block padding | 10px |
+| code block font-size | 80% |
+| footer outer margin | 30px 30px 15px |
 
 ## Vertical rhythm
 
-Prefer a small family of repeated intervals. Avoid inventing a new margin for every component.
+В референсе большое количество блоков связано общим правилом:
 
-## Full-width composition
+    margin-bottom: 30px;
 
-A lead figure can break the prose measure. This is analogous to a print figure crossing the normal text column to establish a visual opening.
+Это создаёт повторяемый вертикальный модуль.
 
-The reference limits this special treatment to the first figure.
+Исключения нужны там, где вложенная структура уже имеет собственный ритм: списки, figure caption, code block, footer и другие специальные элементы.
+
+## Text measure
+
+Основная мера около 624px ограничивает длину строки.
+
+Это близко к классическому типографическому принципу ограничения ширины набора: длинная строка увеличивает стоимость горизонтального возврата глаза и снижает устойчивость чтения.
+
+Для технической документации ширина должна оцениваться не только в пикселях, но и в фактическом количестве символов и визуальной плотности шрифта.
+
+## Print-derived principles
+
+Полиграфическая логика полезна как дизайн-эвристика:
+
+1. сначала задаётся мера набора;
+2. затем line-height;
+3. затем вертикальный ритм;
+4. затем заголовочная иерархия;
+5. только после этого добавляются декоративные элементы.
+
+Пустое пространство является частью структуры, а не остатком после размещения контента.
+
+## Navigation spacing
+
+CSS референса:
+
+    nav {
+      padding: 45px 30px;
+    }
+
+    nav ul {
+      margin: 0 45px 0 0;
+      display: inline-block;
+    }
+
+45px между navigation groups отделяют уровни дерева, не превращая их в независимые панели.
+
+Это важное отличие от sidebar navigation: здесь whitespace является средством структурирования горизонтального дерева.
+
+## Lists
+
+Списки используют:
+
+    margin-left: 30px;
+    line-height: 25px;
+    padding: 0 5px;
+
+Левый отступ создаёт собственную визуальную колонку маркеров/номеров. Не следует заменять его серией пробелов.
+
+## Figure
+
+Caption получает:
+
+    padding: 15px 0;
+
+Это отделяет подпись от изображения, не создавая дополнительного тяжёлого блока.
+
+## Article
+
+Article получает:
+
+    border-left: 1px dotted;
+    padding-left: 25px;
+
+Здесь граница является структурным маркером, а не декоративной рамкой вокруг всего блока.
+
+## Code
+
+Code block получает:
+
+    padding: 10px;
+    margin-bottom: 30px;
+
+Внутренний отступ отделяет код от фона, а внешний — кодовый блок от следующего содержательного блока.
 
 ## Responsive behavior
 
-Desktop measurements yield to viewport boundaries.
+На узком viewport фиксированные desktop-меры не должны приводить к горизонтальному overflow.
 
-The lead figure is capped by:
+Референс использует:
 
-    max-width: 100vw
+    max-width: 100%;
+    max-width: 100vw;
 
-Do not create horizontal scrolling merely to preserve a desktop measurement.
+для соответствующих элементов.
+
+Lead figure поэтому может быть шире основной текстовой меры на desktop, но не должен выходить за viewport.
 
 ## Accessibility
 
-Do not encode meaning solely through spacing. Whitespace should support semantic structure, not replace headings, lists, paragraphs or landmarks.
+Whitespace не должен использоваться как единственный способ сообщить смысл.
 
-## Review
+Если два блока относятся к разным секциям, это должно быть выражено семантически через HTML, heading hierarchy или другие структурные признаки. CSS лишь усиливает уже существующую структуру.
 
-For every new component ask:
+## Design rule
 
-- What semantic unit is this?
-- Which existing rhythm does it belong to?
-- Does it need tight, normal or structural separation?
-- Is the text measure readable?
-- Is whitespace communicating hierarchy?
-- Could the same hierarchy be expressed without another color or decorative element?
+Для этого сайта полезен следующий порядок принятия решения:
+
+    semantics
+        ↓
+    measure
+        ↓
+    rhythm
+        ↓
+    hierarchy
+        ↓
+    whitespace
+        ↓
+    borders / lines
+        ↓
+    color
+
+Чем ниже элемент в этой последовательности, тем меньше он должен использоваться для компенсации отсутствия структуры.
