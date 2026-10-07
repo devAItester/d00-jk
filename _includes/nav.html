@@ -92,12 +92,12 @@
           {% elsif current_parent == "" %}
             {% if node != "" and parent == "" %}
               <li>
-                <a href="{{ p.url | relative_url }}"{% if node == current %} class="self"{% elsif node == current_parent %} class="parent"{% endif %}>{{ p.title }}</a>
+                <a href="{{ p.url | relative_url }}"{% if node == current %} class="self"{% endif %}>{{ p.title }}</a>
               </li>
             {% endif %}
           {% elsif node != "" and parent == current_grandparent %}
             <li>
-              <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
+              <a href="{{ p.url | relative_url }}"{% if node == current_parent %} class="parent"{% endif %}>{{ p.title }}</a>
             </li>
           {% endif %}
         {% endif %}
