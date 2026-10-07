@@ -55,7 +55,8 @@ parser = Parser()
 parser.feed((site_dir / "index.html").read_text(encoding="utf-8"))
 actual = {href: title for href, title in parser.links if href}
 
-source = {}
+source_titles = []
+source_modes = {}
 for path in pathlib.Path(".").rglob("*.md"):
     if any(part in {".git", "_site"} for part in path.parts) or path.name == "README.md":
         continue
@@ -75,9 +76,10 @@ for path in pathlib.Path(".").rglob("*.md"):
     if not title:
         raise SystemExit(f"Missing non-empty front matter title: {path}")
     if path.as_posix() != "index.md":
-        source[title] = path.name == "index.md"
+        source_titles.append(title)
+        source_modes[title] = path.name == "index.md"
 
-if Counter(source) != Counter(actual.values()):
+if Counter(source_titles) != Counter(actual.values()):
     raise SystemExit(
         "Homepage links do not represent exactly the source pages.\n"
         f"source={sorted(source)}\nactual={sorted(actual.values())}"
@@ -97,7 +99,7 @@ for href, title in actual.items():
     output = output_for(href)
     if output is None or not output.is_file():
         raise SystemExit(f"No generated HTML for homepage link: {href} ({title})")
-    if href.endswith("/") and not source.get(title, False):
+    if href.endswith("/") and not source_modes.get(title, False):
         raise SystemExit(f"Non-index page has a directory URL: {href} ({title})")
 
 print(f"Generated page URLs OK: {len(actual)} pages resolve to HTML output.")
