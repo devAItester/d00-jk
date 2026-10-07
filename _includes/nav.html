@@ -85,20 +85,14 @@
 
           {% if current == "" %}
             {% if node != "" and parent == "" %}
-              <li>
-                <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
-              </li>
+              <li><a href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
             {% endif %}
           {% elsif current_parent == "" %}
             {% if node != "" and parent == "" %}
-              <li>
-                <a href="{{ p.url | relative_url }}"{% if node == current %} class="self"{% endif %}>{{ p.title }}</a>
-              </li>
+              <li><a href="{{ p.url | relative_url }}"{% if node == current %} class="self"{% endif %}>{{ p.title }}</a></li>
             {% endif %}
           {% elsif node != "" and parent == current_grandparent %}
-            <li>
-              <a href="{{ p.url | relative_url }}"{% if node == current_parent %} class="parent"{% endif %}>{{ p.title }}</a>
-            </li>
+            <li><a href="{{ p.url | relative_url }}"{% if node == current_parent %} class="parent"{% endif %}>{{ p.title }}</a></li>
           {% endif %}
         {% endif %}
       {% endfor %}
@@ -118,9 +112,7 @@
           {% assign parent = parent_parts | join: "/" %}
 
           {% if node != "" and parent == current_parent %}
-            <li>
-              <a href="{{ p.url | relative_url }}"{% if node == current %} class="self"{% elsif node == current_parent %} class="parent"{% endif %}>{{ p.title }}</a>
-            </li>
+            <li><a href="{{ p.url | relative_url }}"{% if node == current %} class="self"{% elsif node == current_parent %} class="parent"{% endif %}>{{ p.title }}</a></li>
           {% endif %}
         {% endif %}
       {% endfor %}
@@ -140,9 +132,7 @@
           {% assign parent = parent_parts | join: "/" %}
 
           {% if node != "" and parent == current %}
-            <li>
-              <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
-            </li>
+            <li><a href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
           {% endif %}
         {% endif %}
       {% endfor %}
