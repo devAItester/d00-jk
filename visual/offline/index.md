@@ -1,4 +1,5 @@
 ---
+permalink: /visual/offline.html
 layout: default
 title: offline index
 arvelie: 00016
