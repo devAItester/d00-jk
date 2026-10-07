@@ -157,7 +157,7 @@ Workflow должен выполнять проверки в таком поря
 Минимальный набор:
 
     /
-    /development/
+    /development/index.html
     /development/navigation.html
     /development/tests.html
 
