@@ -5,8 +5,9 @@
     {% assign section = parts[0] %}
     {% for p in site.pages %}
       {% assign pparts = p.path | split: '/' %}
-      {% if pparts[0] == section and p.url != page.url %}
-        <li><a href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
+      {% if pparts[0] == section and p.path != section | append: '/index.md' %}
+        {% assign link = p.path | replace: '.md', '.html' | prepend: '/' | replace: '/index.html', '/' %}
+        {% if p.url != page.url %}<li><a href="{{ link | relative_url }}">{{ p.title }}</a></li>{% endif %}
       {% endif %}
     {% endfor %}
   </ul>
