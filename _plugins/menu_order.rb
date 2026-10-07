@@ -6,11 +6,7 @@ module Flatfiletxtdb
     EXCLUDED_PATHS = ["404.html", "index.html"].freeze
 
     def self.apply(site)
-      pages = site.pages.select do |page|
-        page.title && !page.title.to_s.empty? && !EXCLUDED_PATHS.include?(page.path)
-      end
-
-      pages_by_dir = pages.group_by do |page|
+      pages_by_dir = site.pages.group_by do |page|
         dir = File.dirname(page.path)
         dir == "." ? "" : dir
       end
@@ -42,7 +38,8 @@ module Flatfiletxtdb
 
         dir_pages.each do |page|
           name = File.basename(page.path)
-          rank = menu_rank.fetch(name, menu.length)
+          menuable = available.key?(name)
+          rank = menuable ? menu_rank.fetch(name, menu.length) : menu.length + 1
 
           page.data["menu_rank"] = rank
           page.data["menu_key"] = format(
