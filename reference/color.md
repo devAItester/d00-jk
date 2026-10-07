@@ -5,93 +5,106 @@ title: color
 
 # Color
 
-The reference uses color as a scarce semantic resource.
+Цветовая модель намеренно минимальна. Основное состояние интерфейса строится на отношениях black/white; цвет не используется как второй независимый слой классификации контента.
 
-The default interface is deliberately monochrome:
+## Base palette
 
-    foreground: #000
-    background: #fff
+Основная пара:
 
-Dark mode reverses the relationship:
+    #000
+    #fff
 
-    foreground: #fff
+В light mode основной текст чёрный на белом фоне.
+
+В dark mode:
+
+    color: #fff
     background: #000
 
-## Philosophy
+Инверсия не создаёт новую цветовую систему — она меняет полярность той же системы.
 
-Most relationships are expressed through:
+## Hover
 
-- position;
-- typography;
-- underline;
-- spacing;
-- borders;
-- hierarchy;
-- repetition.
+При наведении ссылка инвертирует контраст:
 
-Color is not assigned to every category.
+    background-color: #000;
+    color: #fff;
 
-## Interaction
+В dark mode:
 
-Hover uses inversion:
+    background-color: #fff;
+    color: #000;
 
-    light mode:
-      black background
-      white text
-
-    dark mode:
-      white background
-      black text
-
-This makes interaction visible without adding a palette of status colors.
+Это даёт очень сильный интерактивный сигнал без введения дополнительных цветов.
 
 ## Selection
 
-The reference reserves a single accent for text selection:
+Выделение текста использует один небольшой акцент:
 
     #72dec2
 
-This is restrained use of color: one accent can identify an interaction state without becoming a general decorative palette.
+Этот цвет не превращается в систему категорий. Он используется как состояние выделения, а не как semantic taxonomy.
+
+## Hierarchy
+
+Визуальная иерархия должна строиться в следующем порядке:
+
+1. структура документа;
+2. typography;
+3. spacing;
+4. line/border;
+5. color.
+
+Если смысл невозможно понять без цвета, структура недостаточно выражена.
 
 ## Dark mode
 
-The reference uses:
+Dark mode включается системным media query:
 
     @media (prefers-color-scheme: dark)
 
-The transformation is essentially:
+Это сохраняет тот же контрастный принцип и не требует отдельной пользовательской темы.
 
-    white page -> black page
-    black text -> white text
+## Images in dark mode
 
-Code blocks become near-black and selected raster formats may be inverted where appropriate.
+Референс инвертирует определённые PNG/SVG:
 
-## What not to do
+    img[src*="svg"],
+    img[src*="png"] {
+      filter: invert(1) hue-rotate(180deg);
+    }
 
-Do not assign a different color to every navigation level.
+Это не универсальное правило для всех изображений.
 
-Do not use color as the only indicator of state.
-
-Do not add gradients, cards, badges or colored panels merely to enrich the interface.
+Фотографии и изображения, где цвет является содержательной частью объекта, нельзя автоматически инвертировать без проверки.
 
 ## Accessibility
 
-A monochrome palette is not automatically accessible.
+WCAG требует, чтобы цвет не был единственным способом передачи информации.
 
-Contrast, focus indication, text size and interaction behavior still matter.
+Поэтому состояния navigation уже различаются структурой и типографикой:
 
-Color must not be the sole carrier of information.
+    a.parent
+    a.self
 
-## Design principle
+а цвет дополнительно усиливает hover/selection.
 
-The palette is intentionally smaller than the information architecture.
+## Avoid semantic color coding
 
-The tree can have arbitrary depth. The color system does not need a new color for each depth.
+Не следует вводить:
 
-## Practical rule
+    audio = blue
+    research = green
+    software = red
 
-When considering another color, first ask whether the distinction can be expressed with:
+если эти цвета не несут обязательной функциональной роли.
 
-    structure -> typography -> spacing -> line/border -> color
+Каталог уже выражен структурой URL и navigation tree. Цветовая маркировка только увеличила бы визуальную сложность и стоимость поддержки.
 
-Color should normally be the later tool, not the first.
+## Principle
+
+Минимализм цвета здесь не означает «цвета запрещены».
+
+Он означает, что цвет имеет низкий приоритет в системе визуального кодирования.
+
+Сначала должна работать структура. Цвет лишь усиливает уже понятное состояние.
