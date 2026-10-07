@@ -19,6 +19,7 @@ jobs:
           bundler-cache: false
       - run: bash scripts/check-pages.sh
       - run: gem install jekyll
+      - run: bash scripts/check-menu-order.sh
       - run: jekyll build
       - run: bash scripts/check-urls.sh _site /flatfiletxtdb
       - uses: actions/upload-pages-artifact@v4
