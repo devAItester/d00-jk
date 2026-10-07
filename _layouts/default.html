@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title }} — {{ site.title }}</title>
+  <link rel="stylesheet" href="{{ '/site/style.css' | relative_url }}">
+</head>
+<body>
+<header>
+{% include nav.html %}
+</header>
+<main>
+  <nav class="crumbs">
+    <a href="{{ '/' | relative_url }}">root</a>
+    {% assign parts = page.dir | split: '/' %}
+    {% assign path = '' %}
+    {% for part in parts %}
+      {% if part != '' %}
+        {% assign path = path | append: '/' | append: part %}
+        / <a href="{{ path | append: '/' | relative_url }}">{{ part }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if page.url != '/' %} / {{ page.title }}{% endif %}
+  </nav>
+
+  {{ content }}
+
+  {% if page.incoming %}
+  <section>
+    <h2>incoming</h2>
+    {% for item in page.incoming %}
+      {% assign source = site.pages | where: "path", item | first %}
+      {% if source %}<a href="{{ source.url | relative_url }}">{{ source.title }}</a><br>{% endif %}
+    {% endfor %}
+  </section>
+  {% endif %}
+</main>
+</body>
+</html>
