@@ -18,7 +18,7 @@ jobs:
       - run: bash scripts/check-pages.sh
       - run: gem install jekyll
       - run: jekyll build
-      - run: bash scripts/check-site.sh _site /flatfiletxtdb
+      - run: bash scripts/check-urls.sh _site /flatfiletxtdb
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
