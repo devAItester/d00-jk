@@ -15,7 +15,9 @@ module Flatfiletxtdb
         menu_path = File.join(site.source, dir, MENU_FILE)
         menu = read_menu(menu_path)
 
-        available = dir_pages.to_h { |page| [File.basename(page.path), page] }
+        available = dir_pages.select do |page|
+          page.title && !page.title.to_s.empty? && !EXCLUDED_PATHS.include?(page.path)
+        end.to_h { |page| [File.basename(page.path), page] }
 
         if menu
           unknown = menu.reject { |name| available.key?(name) }
