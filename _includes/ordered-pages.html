@@ -30,9 +30,10 @@
     {% assign parent_parts = parts | pop %}
     {% assign page_parent = parent_parts | join: "/" %}
     {% assign name = parts | last %}
+    {% assign filename = p.path | split: "/" | last %}
 
     {% if node != "" and page_parent == parent %}
-      {% unless ordered and ordered contains name %}
+      {% unless ordered and ordered contains filename %}
         <li><a href="{{ p.url | relative_url }}"{% if node == include.current %} class="self"{% elsif node == include.parent %} class="parent"{% endif %}>{{ p.title }}</a></li>
       {% endunless %}
     {% endif %}
