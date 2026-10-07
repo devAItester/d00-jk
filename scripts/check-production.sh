@@ -49,11 +49,21 @@ def fetch(url):
             time.sleep(5)
     raise last
 
-status, final, content_type, body = fetch(base + "/")
+try:
+    status, final, content_type, body = fetch(base + "/")
+except urllib.error.HTTPError as exc:
+    raise SystemExit(f"Homepage failed: HTTP {exc.code}: {base}/")
 if status < 200 or status >= 400:
-    raise SystemExit(f"Homepage failed: HTTP {status}")
+    raise SystemExit(f"Homepage failed: HTTP {status}: {base}/")
 if b"<main" not in body:
     raise SystemExit("Homepage does not contain <main>")
+
+try:
+    index_status, index_final, index_content_type, index_body = fetch(base + "/index.html")
+except urllib.error.HTTPError as exc:
+    raise SystemExit(f"Root index.html failed: HTTP {exc.code}: {base}/index.html")
+if index_status < 200 or index_status >= 400 or not index_body:
+    raise SystemExit(f"Root index.html failed: HTTP {index_status}: {base}/index.html")
 
 parser = Parser()
 parser.feed(body.decode("utf-8", "replace"))
