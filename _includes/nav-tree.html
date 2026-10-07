@@ -15,11 +15,8 @@
         {% assign current_class = "" %}
         {% if p.url == page.url %}
           {% assign current_class = "self" %}
-        {% elsif include.parent != "" %}
-          {% assign parent_prefix = include.parent | append: "/" %}
-          {% if node contains parent_prefix %}
-            {% assign current_class = "parent" %}
-          {% endif %}
+        {% elsif page.url contains p.url and p.url != "/" %}
+          {% assign current_class = "parent" %}
         {% endif %}
         <li>
           <a href="{{ p.url | relative_url }}" {% if current_class != "" %}class="{{ current_class }}"{% endif %}>{{ p.title }}</a>
