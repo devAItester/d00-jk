@@ -1,4 +1,5 @@
 ---
+permalink: /audio/offline.html
 layout: default
 title: offline
 arvelie: 00008
