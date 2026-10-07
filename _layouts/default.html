@@ -1,40 +1,17 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ page.title }} — {{ site.title }}</title>
-  <link rel="stylesheet" href="{{ '/site/style.css' | relative_url }}">
+<!DOCTYPE html><html id="lo"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ site.title }} &mdash; {{ page.title }}</title>
+<link href="{{ '/site/style.css' | relative_url }}" type="text/css" rel="stylesheet">
 </head>
 <body>
-<header>
+<header><a href="{{ '/' | relative_url }}"><b>{{ site.title }}</b></a></header>
 {% include nav.html %}
-</header>
 <main>
-  <nav class="crumbs">
-    <a href="{{ '/' | relative_url }}">root</a>
-    {% assign parts = page.dir | split: '/' %}
-    {% assign path = '' %}
-    {% for part in parts %}
-      {% if part != '' %}
-        {% assign path = path | append: '/' | append: part %}
-        / <a href="{{ path | append: '/' | relative_url }}">{{ part }}</a>
-      {% endif %}
-    {% endfor %}
-    {% if page.url != '/' %} / {{ page.title }}{% endif %}
-  </nav>
-
-  {{ content }}
-
-  {% if page.incoming %}
-  <section>
-    <h2>incoming</h2>
-    {% for item in page.incoming %}
-      {% assign source = site.pages | where: "path", item | first %}
-      {% if source %}<a href="{{ source.url | relative_url }}">{{ source.title }}</a><br>{% endif %}
-    {% endfor %}
-  </section>
-  {% endif %}
+{{ content }}
 </main>
-</body>
-</html>
+<footer>
+  <a href="{{ '/' | relative_url }}">{{ site.title }}</a>&bull; flat-file text database
+  <div class="right"><a href="https://github.com/XXIIVV/oscean" target="_blank">oscean</a></div>
+  <hr/>
+</footer>
+</body></html>
