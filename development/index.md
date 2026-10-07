@@ -1,4 +1,5 @@
 ---
+permalink: /development.html
 layout: default
 title: development
 ---
