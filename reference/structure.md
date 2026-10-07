@@ -5,7 +5,7 @@ title: structure
 
 # Structure
 
-The site separates content, navigation structure, presentation, and binary resources.
+Сайт разделяет содержательный слой, структуру навигации, представление и бинарные ресурсы.
 
 ## Repository tree
 
@@ -15,6 +15,7 @@ The site separates content, navigation structure, presentation, and binary resou
         default.html
     _includes/
         nav.html
+        nav-tree.html
         style.css
 
     audio/
@@ -41,27 +42,47 @@ The site separates content, navigation structure, presentation, and binary resou
 
 ### Markdown page
 
-A Markdown file with Jekyll front matter is public site content and becomes an HTML document.
+Markdown-файл с Jekyll front matter является публичным контентом сайта и при сборке превращается в HTML-документ.
+
+Минимальный контракт страницы:
+
+    ---
+    layout: default
+    title: page title
+    ---
+
+Поле `title` обязательно. Оно используется как название страницы в `<title>`, навигации и других производных представлениях.
 
 ### Directory
 
-A directory is a structural namespace. It groups pages and defines their navigation context.
+Каталог является структурным namespace. Он группирует страницы и определяет их контекст в дереве навигации.
+
+Сам по себе пустой каталог публичным разделом не является.
 
 ### index.md
 
-index.md is the public landing page of a directory. It gives the section a stable URL and a public node for navigation.
+`index.md` — публичная landing page каталога. Она даёт разделу стабильный URL и одновременно является node дерева.
+
+Например:
+
+    research/
+        index.md
+        systems/
+            index.md
+
+создаёт два публичных узла: `research` и `research/systems`.
 
 ### README.md
 
-README.md is repository documentation, not site content. It explains the source tree to maintainers and is intentionally excluded from the Jekyll page collection.
+`README.md` — документация репозитория для сопровождающего, а не контент сайта. Он объясняет устройство исходников и намеренно исключён из Jekyll page collection.
 
-Do not use README.md as a replacement for a public index.md.
+`README.md` нельзя использовать вместо публичного `index.md`.
 
 ### media/
 
-media/ is a resource namespace, not a content section. It contains binary and static resources used by pages.
+`media/` — namespace ресурсов, а не раздел содержимого. Здесь находятся бинарные и иные статические ресурсы, используемые страницами.
 
-Its README documents the resource tree for maintainers. Public documentation about media belongs under reference/.
+README внутри `media/` описывает ресурсное дерево для сопровождающего. Публичная документация о media находится в `reference/media.md`.
 
 ## Rule of thumb
 
@@ -73,4 +94,10 @@ Its README documents the resource tree for maintainers. Public documentation abo
     reusable fragments  -> _includes/
     presentation        -> _includes/style.css
 
-This separation prevents repository metadata from becoming public content and prevents resources from being mistaken for pages.
+Такое разделение не позволяет служебной документации репозитория случайно стать публичным контентом и не позволяет ресурсам быть ошибочно принятыми за страницы.
+
+## Source of truth
+
+Иерархия каталогов и файлов является источником истины.
+
+Меню не дублирует её отдельным YAML-списком. Jekyll получает pages, а recursive include строит из их путей визуальное представление дерева.
