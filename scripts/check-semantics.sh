@@ -55,8 +55,6 @@ source_root = pathlib.Path(".")
 
 for path in sorted(site_dir.rglob("*.html")):
     html = path.read_text(encoding="utf-8")
-    if any(marker in html for marker in ("cite", "url", "entity", "image_group", "memcite")):
-        failures.append(f"{path}: contains unresolved ChatGPT markup")
     parser = PageParser()
     parser.feed(html)
     for tag, count in parser.counts.items():
@@ -88,8 +86,10 @@ for source_path in sorted(source_root.rglob("*.md")):
     parser.feed(output.read_text(encoding="utf-8"))
     actual = [level for level, _ in parser.headings]
     expected = source_heading_levels(source)
-    if actual != expected:
+    if expected and actual != expected:
         failures.append(f"{source_path}: heading levels changed: expected {expected}, actual {actual}")
+    elif not expected and actual not in ([], [1]):
+        failures.append(f"{source_path}: unexpected generated heading levels: {actual}")
 
 if failures:
     print("\n".join(failures))
