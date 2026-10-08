@@ -20,7 +20,7 @@ title: semantic HTML
 - `aside` — содержимое, связанное с окружающим материалом косвенно, но имеющее самостоятельный смысл.
 - `footer` — нижняя часть ближайшего sectioning-контекста; на уровне `body` это футер всей страницы.
 
-**Регламент:** WHATWG HTML Living Standard, §4.3 «Sections», в частности §4.3.2 `article`, §4.3.3 `section`, §4.3.4 `nav`, §4.3.5 `aside`, §4.3.8 `header`, §4.3.9 `footer`; для `main` — §4.4.14. urlHTML Standard — Sections (§4.3)https://html.spec.whatwg.org/multipage/sections.html
+**Регламент:** WHATWG HTML Living Standard, §4.3 «Sections», в частности §4.3.2 `article`, §4.3.3 `section`, §4.3.4 `nav`, §4.3.5 `aside`, §4.3.8 `header`, §4.3.9 `footer`; для `main` — §4.4.14. [WHATWG HTML Standard — Sections (§4.3)](https://html.spec.whatwg.org/multipage/sections.html)
 
 ## 2. `section` не является заменой `div`
 
@@ -32,7 +32,7 @@ title: semantic HTML
 
 **Практическое правило:** сначала спросить «какой смысл у этого блока?», а не «какой тег удобнее стилизовать?».
 
-**Источник:** WHATWG §4.3.3 «The `section` element». urlWHATWG §4.3.3 — sectionhttps://html.spec.whatwg.org/multipage/sections.html#the-section-element
+**Источник:** WHATWG §4.3.3 «The `section` element». [WHATWG §4.3.3 — section](https://html.spec.whatwg.org/multipage/sections.html#the-section-element)
 
 ## 3. `article` — самостоятельная единица содержания
 
@@ -42,7 +42,7 @@ title: semantic HTML
 
 Вложенные `article` допустимы, если внутренние элементы действительно являются связанными самостоятельными материалами.
 
-**Источник:** WHATWG §4.3.2 «The `article` element». urlWHATWG §4.3.2 — articlehttps://html.spec.whatwg.org/multipage/sections.html#the-article-element
+**Источник:** WHATWG §4.3.2 «The `article` element». [WHATWG §4.3.2 — article](https://html.spec.whatwg.org/multipage/sections.html#the-article-element)
 
 Мурыч показывает тот же принцип на карточках: визуальная карточка должна быть отражена в структуре документа соответствующим семантическим блоком, а не превращена в набор безымянных `div`.
 
@@ -54,7 +54,7 @@ title: semantic HTML
 
 Наше трёхколоночное дерево — именно навигация по сайту, поэтому `nav` в шаблоне оправдан.
 
-**Источник:** WHATWG §4.3.4 «The `nav` element», особенно абзац о major navigation blocks и ссылках в footer. urlWHATWG §4.3.4 — navhttps://html.spec.whatwg.org/multipage/sections.html#the-nav-element
+**Источник:** WHATWG §4.3.4 «The `nav` element», особенно абзац о major navigation blocks и ссылках в footer. [WHATWG §4.3.4 — nav](https://html.spec.whatwg.org/multipage/sections.html#the-nav-element)
 
 ## 5. `main` — только основное содержимое
 
@@ -64,8 +64,8 @@ WHATWG требует не более одного видимого `main` на 
 
 Наш layout поэтому должен иметь один `main`, а навигацию и футер держать вне него.
 
-**Источник:** WHATWG §4.4.14 «The `main` element». urlWHATWG §4.4.14 — mainhttps://html.spec.whatwg.org/multipage/grouping-content.html#the-main-element  
-**Accessibility:** W3C WAI-ARIA APG, «Main Landmark». urlW3C APG — Main Landmarkhttps://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/main.html
+**Источник:** WHATWG §4.4.14 «The `main` element». [WHATWG §4.4.14 — main](https://html.spec.whatwg.org/multipage/grouping-content.html#the-main-element)  
+**Accessibility:** W3C WAI-ARIA APG, «Main Landmark». [W3C APG — Main Landmark](https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/main.html)
 
 ## 6. `aside` — дополнительное, а не просто «правая колонка»
 
@@ -73,7 +73,7 @@ WHATWG требует не более одного видимого `main` на 
 
 Поэтому «правый блок» не должен автоматически становиться `aside`. Если это основной контент — он остаётся частью `main`; если это самостоятельная боковая информация — тогда `aside`.
 
-**Источник:** WHATWG §4.3.5 «The `aside` element». urlWHATWG §4.3.5 — asidehttps://html.spec.whatwg.org/multipage/sections.html#the-aside-element
+**Источник:** WHATWG §4.3.5 «The `aside` element». [WHATWG §4.3.5 — aside](https://html.spec.whatwg.org/multipage/sections.html#the-aside-element)
 
 ## 7. `header` и `footer` определяются контекстом
 
@@ -86,9 +86,9 @@ WHATWG требует не более одного видимого `main` на 
 
 В нашем layout глобальный `footer` находится непосредственно в `body`, поэтому он семантически является футером всего сайта.
 
-**Источник:** WHATWG §4.3.8 и §4.3.9. urlWHATWG §4.3.9 — footerhttps://html.spec.whatwg.org/multipage/sections.html#the-footer-element
+**Источник:** WHATWG §4.3.8 и §4.3.9. [WHATWG §4.3.9 — footer](https://html.spec.whatwg.org/multipage/sections.html#the-footer-element)
 
-W3C WAI отдельно отмечает, что глобальный `footer` создаёт landmark `contentinfo`, что позволяет assistive technology быстро переходить к информации внизу страницы. urlW3C WAI — Page Regionshttps://www.w3.org/WAI/tutorials/page-structure/regions/
+W3C WAI отдельно отмечает, что глобальный `footer` создаёт landmark `contentinfo`, что позволяет assistive technology быстро переходить к информации внизу страницы. [W3C WAI — Page Regions](https://www.w3.org/WAI/tutorials/page-structure/regions/)
 
 ## 8. Заголовки: смысл важнее размера
 
@@ -102,7 +102,7 @@ W3C WAI отдельно отмечает, что глобальный `footer` 
 
 Именно это Мурыч подчёркивает в разборе: семантика имеет приоритет, визуальное представление накладывается поверх неё.
 
-**Источник:** WHATWG §4.3.6 «The `h1`–`h6` elements» и §4.3.11 «Headings and outlines». urlWHATWG §4.3.6 — headingshttps://html.spec.whatwg.org/multipage/sections.html#the-h1,-h2,-h3,-h4,-h5,-and-h6-elements
+**Источник:** WHATWG §4.3.6 «The `h1`–`h6` elements» и §4.3.11 «Headings and outlines». [WHATWG §4.3.6 — headings](https://html.spec.whatwg.org/multipage/sections.html#the-h1,-h2,-h3,-h4,-h5,-and-h6-elements)
 
 ## 9. Современное правило уровней заголовков
 
@@ -119,7 +119,7 @@ W3C WAI отдельно отмечает, что глобальный `footer` 
 
 Это отличается от старого HTML5 outline algorithm и от старого «правила хорошего тона», которое Мурыч разбирает исторически. Для нового сайта ориентируемся на действующую спецификацию, а не на устаревший outline algorithm.
 
-**Источник:** WHATWG §4.3.11 «Headings and outlines», особенно правила в абзацах о наличии level-1 heading и допустимом offset уровня. urlWHATWG §4.3.11 — headings and outlineshttps://html.spec.whatwg.org/multipage/sections.html#headings-and-outlines
+**Источник:** WHATWG §4.3.11 «Headings and outlines», особенно правила в абзацах о наличии level-1 heading и допустимом offset уровня. [WHATWG §4.3.11 — headings and outlines](https://html.spec.whatwg.org/multipage/sections.html#headings-and-outlines)
 
 ## 10. Один семантический HTML для всех представлений
 
@@ -139,7 +139,7 @@ WHATWG определяет `div` как элемент без специаль�
 
 > Если для блока существует точный семантический элемент — используем его. Если смыслового элемента нет и контейнер нужен только для группировки/стилей — используем `div`.
 
-**Источник:** WHATWG §4.4.16 «The `div` element». urlWHATWG §4.4.16 — divhttps://html.spec.whatwg.org/multipage/grouping-content.html#the-div-element
+**Источник:** WHATWG §4.4.16 «The `div` element». [WHATWG §4.4.16 — div](https://html.spec.whatwg.org/multipage/grouping-content.html#the-div-element)
 
 ## 12. Accessibility — семантика должна быть видна машинам
 
@@ -148,8 +148,8 @@ WHATWG определяет `div` как элемент без специаль�
 W3C рекомендует по возможности помещать весь воспринимаемый пользователем контент в семантически значимые landmarks. При этом не следует дублировать нативную HTML-семантику ненужными `role`: например, `<main>` уже создаёт main landmark, поэтому `role="main"` не требуется.
 
 **Источники:**  
-- W3C WAI Technique H101 — semantic HTML regions. urlW3C WAI H101https://www.w3.org/WAI/WCAG21/Techniques/html/H101
-- W3C APG — Landmark Regions. urlW3C APG — Landmark Regionshttps://www.w3.org/WAI/ARIA/apg/practices/landmark-regions/
+- W3C WAI Technique H101 — semantic HTML regions. [W3C WAI H101](https://www.w3.org/WAI/WCAG21/Techniques/html/H101)
+- W3C APG — Landmark Regions. [W3C APG — Landmark Regions](https://www.w3.org/WAI/ARIA/apg/practices/landmark-regions/)
 
 ## 13. Правило для нашего шаблона
 
