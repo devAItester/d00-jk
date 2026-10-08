@@ -14,7 +14,7 @@ title: media
 
 Для `img` задаются одновременно `width` и `height`, если ресурс имеет естественные размеры. Эти значения должны сохранять естественное соотношение сторон изображения. Они описывают геометрию, а не являются требованием к визуальному размеру: CSS может масштабировать изображение.
 
-WHATWG прямо указывает, что dimension attributes задают размеры визуального содержимого и aspect ratio; они не предназначены для растягивания изображения. Браузер может использовать эти данные до загрузки ресурса, чтобы избежать перерасчёта layout. citeturn5search1turn5search7
+WHATWG прямо указывает, что dimension attributes задают размеры визуального содержимого и aspect ratio; они не предназначены для растягивания изображения. Браузер может использовать эти данные до загрузки ресурса, чтобы избежать перерасчёта layout. [WHATWG — dimension attributes and images](https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes)
 
 Главный критерий: загрузка изображения не должна впервые сообщать браузеру размеры уже размещённой области.
 
@@ -34,7 +34,7 @@ WHATWG прямо указывает, что dimension attributes задают �
 - `alt` передаёт название сущности, которую представляет ссылка;
 - не добавляем слово «logo» в `alt`, если оно не является частью передаваемого смысла.
 
-WHATWG приводит именно такой случай для логотипа компании: когда логотип представляет сущность, альтернативным текстом является название сущности. citeturn5search7
+WHATWG приводит именно такой случай для логотипа компании: когда логотип представляет сущность, альтернативным текстом является название сущности. [WHATWG — img and alternative text](https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element)
 
 ### SVG content
 
@@ -46,13 +46,13 @@ SVG должен оставаться самостоятельным векто�
 - `desc` используется для дополнительного описания, когда оно действительно несёт смысл;
 - не добавляем декоративную или дублирующую семантику только ради SEO.
 
-SVG 2 определяет `viewBox` как область пользовательской системы координат, отображаемую в viewport, а `title` и `desc` — как текстовые описания графики. citeturn3search3turn3search0
+SVG 2 определяет `viewBox` как область пользовательской системы координат, отображаемую в viewport, а `title` и `desc` — как текстовые описания графики. [W3C SVG 2 — viewBox and SVG descriptions](https://www.w3.org/TR/SVG2/)
 
 ### Google Search logo
 
-Google Search поддерживает SVG как формат изображения. Для обычных изображений Google рекомендует доступный `img src`, содержательный `alt`, релевантный окружающий контекст и стабильный URL. citeturn1search0turn1search7
+Google Search поддерживает SVG как формат изображения. Для обычных изображений Google рекомендует доступный `img src`, содержательный `alt`, релевантный окружающий контекст и стабильный URL. [Google Search Central — Image SEO best practices](https://developers.google.com/search/docs/appearance/google-images)
 
-Отдельное требование Google **112×112 px минимум** относится к свойству `logo` в `Organization` structured data. Это не требование к физическому размеру логотипа в шапке сайта. Если в будущем мы добавим `Organization.logo`, для него нужен отдельный логотип/вариант изображения, соответствующий этим требованиям. Нельзя превращать горизонтальный header logo в квадрат только ради этого правила. citeturn2view0
+Отдельное требование Google **112×112 px минимум** относится к свойству `logo` в `Organization` structured data. Это не требование к физическому размеру логотипа в шапке сайта. Если в будущем мы добавим `Organization.logo`, для него нужен отдельный логотип/вариант изображения, соответствующий этим требованиям. Нельзя превращать горизонтальный header logo в квадрат только ради этого правила. [Google Search Central — Organization structured data](https://developers.google.com/search/docs/appearance/structured-data/organization)
 
 ## alt
 
@@ -72,7 +72,7 @@ Google Search поддерживает SVG как формат изображе�
 
 Если меняется не только размер, но и кадрировка, используем `picture` с отдельными `source` — это art direction.
 
-У `picture` всегда остаётся резервный `img` с `src`. Google прямо рекомендует такой fallback при использовании `picture`. citeturn1search0
+У `picture` всегда остаётся резервный `img` с `src`. Google прямо рекомендует такой fallback при использовании `picture`. [Google Search Central — Image SEO best practices](https://developers.google.com/search/docs/appearance/google-images)
 
 ## Loading
 
@@ -80,7 +80,7 @@ Google Search поддерживает SVG как формат изображе�
 
 Изображения ниже первого экрана можно загружать лениво, если это действительно уменьшает начальную загрузку.
 
-Для lazy-loaded изображений WHATWG рекомендует заранее задавать предпочтительное соотношение сторон через `width` и `height`, чтобы избежать скачка layout. citeturn5search2
+Для lazy-loaded изображений WHATWG рекомендует заранее задавать предпочтительное соотношение сторон через `width` и `height`, чтобы избежать скачка layout. [WHATWG — img loading and dimensions](https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element)
 
 `fetchpriority="high"` применяем только к действительно приоритетному изображению.
 
