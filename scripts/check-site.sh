@@ -2,7 +2,16 @@
 set -euo pipefail
 
 site_dir="${1:-_site}"
-baseurl="${2:-/flatfiletxtdb}"
+baseurl="${2:-}"
+
+if [[ -z "$baseurl" ]]; then
+  baseurl="$(sed -n 's/^baseurl:[[:space:]]*//p' _config.yml | head -n 1)"
+fi
+
+if [[ -z "$baseurl" ]]; then
+  echo "Missing baseurl in _config.yml" >&2
+  exit 1
+fi
 
 python3 - "$site_dir" "$baseurl" <<'PY'
 import html.parser
