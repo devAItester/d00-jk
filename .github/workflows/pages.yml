@@ -21,7 +21,7 @@ jobs:
       - run: gem install jekyll
       - run: bash scripts/check-menu-order.sh
       - run: jekyll build
-      - run: bash scripts/check-urls.sh _site /flatfiletxtdb
+      - run: bash scripts/check-urls.sh _site
       - run: bash scripts/check-semantics.sh _site
       - uses: actions/upload-pages-artifact@v4
         with:
