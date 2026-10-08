@@ -2,7 +2,16 @@
 set -euo pipefail
 
 site_dir="${1:-_site}"
-baseurl="${2:-/flatfiletxtdb}"
+baseurl="${2:-}"
+
+if [[ -z "$baseurl" ]]; then
+  baseurl="$(sed -n 's/^baseurl:[[:space:]]*//p' _config.yml | head -n 1)"
+fi
+
+if [[ -z "$baseurl" ]]; then
+  echo "Missing baseurl in _config.yml" >&2
+  exit 1
+fi
 
 python3 - "$site_dir" "$baseurl" <<'PY'
 import html.parser
@@ -102,7 +111,6 @@ for href, title in actual.items():
     if href.endswith("/") and not source_modes.get(title, False):
         raise SystemExit(f"Non-index page has a directory URL: {href} ({title})")
 
-# The site root is the only generated index.html. All linked content pages must use explicit .html URLs.
 index_outputs = [p for p in site_dir.rglob("index.html") if p.is_file()]
 if index_outputs != [site_dir / "index.html"]:
     raise SystemExit(
